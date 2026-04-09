@@ -1,0 +1,27 @@
+# CRITICAL - Never expose secrets
+.env
+.env.local
+.env.production
+js/config.js
+
+# PHP / Composer
+vendor/
+composer.lock
+
+# Node (if used)
+node_modules/
+.npm
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+error_log
+
+# IDE
+.vscode/
+.idea/
+*.suo

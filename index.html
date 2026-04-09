@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="IMDb Clone - Your ultimate destination for movies, TV shows, celebrities and more." />
+  <title>IMDb Clone – Movies, TV Shows & Celebrities</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Custom CSS -->
+  <link href="css/style.css" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- ========== NAVBAR ========== -->
+<nav class="navbar navbar-expand-lg imdb-navbar sticky-top" id="mainNavbar">
+  <div class="container-fluid px-3 px-lg-4">
+    <!-- Logo -->
+    <a class="navbar-brand me-3" href="index.html">
+      <span class="imdb-logo">IMDb</span>
+    </a>
+
+    <!-- Menu Toggle -->
+    <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <i class="bi bi-list fs-4"></i>
+    </button>
+
+    <!-- Nav Links -->
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav me-auto align-items-lg-center gap-lg-1">
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-pill text-white fw-500 dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-grid-3x3-gap me-1"></i> Menu
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark mega-menu">
+            <li><h6 class="dropdown-header text-warning">MOVIES</h6></li>
+            <li><a class="dropdown-item" href="movies.html"><i class="bi bi-film me-2"></i>Movie Browser</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-star me-2"></i>Top 250 Movies <span class="badge bg-secondary ms-1" style="font-size:0.65rem;">Soon</span></a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-trophy me-2"></i>Oscar Winners <span class="badge bg-secondary ms-1" style="font-size:0.65rem;">Soon</span></a></li>
+            <li><hr class="dropdown-divider border-secondary"></li>
+            <li><h6 class="dropdown-header text-warning">TV SHOWS</h6></li>
+            <li><a class="dropdown-item" href="tvshows.html"><i class="bi bi-tv me-2"></i>TV Browser</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-star me-2"></i>Top 250 TV <span class="badge bg-secondary ms-1" style="font-size:0.65rem;">Soon</span></a></li>
+            <li><hr class="dropdown-divider border-secondary"></li>
+            <li><h6 class="dropdown-header text-warning">WATCHLIST</h6></li>
+            <li><a class="dropdown-item" href="watchlist.html"><i class="bi bi-bookmark me-2"></i>My Watchlist</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-pill text-white" href="movies.html">Movies</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-pill text-white" href="tvshows.html">TV Shows</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-pill text-white" href="celebrities.html">Celebrities</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-pill text-warning fw-600" href="#">
+            <i class="bi bi-lightning-fill me-1"></i>IMDb Pro
+          </a>
+        </li>
+      </ul>
+
+      <!-- Search Bar -->
+      <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0 flex-grow-1 mx-lg-3" style="max-width:480px;">
+        <div class="input-group search-bar-group w-100">
+          <select class="form-select search-category-select" id="searchCategory" style="max-width:110px;">
+            <option value="all">All</option>
+            <option value="movies">Movies</option>
+            <option value="tv">TV Shows</option>
+            <option value="people">People</option>
+          </select>
+          <input type="text" class="form-control search-input" id="globalSearch" placeholder="Search IMDb" autocomplete="off"/>
+          <button class="btn btn-warning search-btn" type="button" onclick="performSearch()">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+        <!-- Live suggestions dropdown -->
+        <div class="search-suggestions" id="searchSuggestions"></div>
+      </div>
+
+      <!-- Right side actions -->
+      <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
+        <a href="watchlist.html" class="btn btn-outline-light btn-sm rounded-pill px-3 d-flex align-items-center gap-1">
+          <i class="bi bi-bookmark-fill text-warning"></i>
+          <span class="d-none d-xl-inline">Watchlist</span>
+          <span class="badge bg-warning text-dark ms-1" id="navWatchlistCount">0</span>
+        </a>
+        <a href="#" class="btn btn-warning btn-sm rounded-pill px-3 fw-600">Sign In</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search results suggestion panel -->
+  <div class="search-overlay d-none" id="searchOverlay">
+    <div class="container px-4">
+      <div class="search-results-panel" id="searchResultsPanel"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== HERO SECTION ========== -->
+<section class="hero-section position-relative overflow-hidden">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="container-fluid px-4 position-relative z-2">
+    <div class="row min-vh-hero align-items-end pb-5">
+      <div class="col-12">
+        <!-- Hero Carousel -->
+        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+          <div class="carousel-indicators hero-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"></button>
+          </div>
+          <div class="carousel-inner" id="heroCarouselInner">
+            <!-- Dynamically filled by JS -->
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FEATURED TODAY ========== -->
+<section class="py-5 bg-dark-custom">
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="section-title mb-0">Featured Today</h2>
+      <a href="movies.html" class="btn btn-outline-warning btn-sm rounded-pill px-3">See all <i class="bi bi-arrow-right"></i></a>
+    </div>
+
+    <!-- Genre Tabs -->
+    <ul class="nav genre-tabs mb-4" id="featuredTabs">
+      <li class="nav-item"><button class="genre-tab active" data-filter="all">All</button></li>
+      <li class="nav-item"><button class="genre-tab" data-filter="action">Action</button></li>
+      <li class="nav-item"><button class="genre-tab" data-filter="drama">Drama</button></li>
+      <li class="nav-item"><button class="genre-tab" data-filter="comedy">Comedy</button></li>
+      <li class="nav-item"><button class="genre-tab" data-filter="sci-fi">Sci-Fi</button></li>
+      <li class="nav-item"><button class="genre-tab" data-filter="thriller">Thriller</button></li>
+    </ul>
+
+    <div class="row g-3" id="featuredMoviesGrid">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ========== TOP RATED MOVIES (Horizontal Scroll) ========== -->
+<section class="py-5 bg-darker-custom">
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="section-title mb-0"><i class="bi bi-star-fill text-warning me-2"></i>Top Rated Movies</h2>
+      <div class="d-flex gap-2">
+        <button class="scroll-btn" id="topRatedPrev"><i class="bi bi-chevron-left"></i></button>
+        <button class="scroll-btn" id="topRatedNext"><i class="bi bi-chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="horizontal-scroll-container" id="topRatedContainer">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ========== TRENDING NOW ========== -->
+<section class="py-5 bg-dark-custom">
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="section-title mb-0"><i class="bi bi-fire text-danger me-2"></i>Trending Now</h2>
+      <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-outline-secondary rounded-pill" id="trendingMovies" onclick="switchTrending('movies')">Movies</button>
+        <button class="btn btn-sm btn-outline-secondary rounded-pill" id="trendingTV" onclick="switchTrending('tv')">TV Shows</button>
+      </div>
+    </div>
+    <div class="horizontal-scroll-container" id="trendingContainer">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ========== FAN FAVORITES ========== -->
+<section class="py-5 bg-darker-custom">
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="section-title mb-0"><i class="bi bi-heart-fill text-danger me-2"></i>Fan Favorites</h2>
+      <a href="movies.html" class="btn btn-outline-warning btn-sm rounded-pill px-3">Explore <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="row g-3" id="fanFavoritesGrid">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ========== IMDb ORIGINALS BANNER ========== -->
+<section class="py-5 imdb-originals-banner">
+  <div class="container px-4">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <span class="badge bg-warning text-dark fs-6 mb-3 px-3 py-2">IMDb Original</span>
+        <h2 class="display-5 fw-bold text-white mb-3">Discover Hidden Gems</h2>
+        <p class="text-muted fs-5 mb-4">From underground cult classics to award-winning masterpieces — curated just for you.</p>
+        <a href="movies.html" class="btn btn-warning btn-lg rounded-pill px-4 me-2 fw-600">
+          <i class="bi bi-play-fill me-1"></i> Browse Now
+        </a>
+        <a href="watchlist.html" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-600">
+          <i class="bi bi-bookmark me-1"></i> My Watchlist
+        </a>
+      </div>
+      <div class="col-lg-6">
+        <div class="row g-2" id="originals-mini-grid">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TOP TV SHOWS ========== -->
+<section class="py-5 bg-dark-custom">
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="section-title mb-0"><i class="bi bi-tv-fill text-info me-2"></i>Top TV Shows</h2>
+      <a href="tvshows.html" class="btn btn-outline-warning btn-sm rounded-pill px-3">See all <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="horizontal-scroll-container" id="topTVContainer">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ========== RECENTLY VIEWED ========== -->
+<section class="py-5 bg-darker-custom" id="recentlyViewedSection" style="display:none!important;">
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="section-title mb-0"><i class="bi bi-clock-history text-secondary me-2"></i>Recently Viewed</h2>
+      <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="clearRecentlyViewed()">Clear</button>
+    </div>
+    <div class="horizontal-scroll-container" id="recentlyViewedContainer">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ========== NEWSLETTER ========== -->
+<section class="py-5 newsletter-section">
+  <div class="container px-4">
+    <div class="newsletter-card p-4 p-lg-5 rounded-4 text-center">
+      <i class="bi bi-envelope-open-fill text-warning fs-1 mb-3"></i>
+      <h3 class="text-white fw-bold mb-2">Get the Latest Movie News</h3>
+      <p class="text-muted mb-4">Subscribe to our newsletter and stay updated with the latest movies, reviews, and celebrity gossip.</p>
+      <form class="d-flex gap-2 justify-content-center flex-wrap" onsubmit="subscribeNewsletter(event)">
+        <input type="email" class="form-control rounded-pill px-4" id="newsletterEmail" placeholder="Enter your email" style="max-width:320px;" required/>
+        <button type="submit" class="btn btn-warning rounded-pill px-4 fw-600">Subscribe</button>
+      </form>
+      <div id="subscribeMsg" class="mt-3 text-success fw-500" style="display:none;">
+        <i class="bi bi-check-circle-fill me-2"></i>You're subscribed! 🎉
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="imdb-footer pt-5 pb-3">
+  <div class="container px-4">
+    <div class="row g-4 mb-4">
+      <div class="col-lg-3 col-md-6">
+        <span class="imdb-logo mb-3 d-inline-block">IMDb</span>
+        <p class="text-muted small">Your ultimate source for movie and TV information. Discover ratings, reviews, and more.</p>
+        <div class="d-flex gap-2 mt-3">
+          <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-6">
+        <h6 class="text-warning fw-bold mb-3 text-uppercase small">Movies</h6>
+        <ul class="list-unstyled footer-links">
+          <li><a href="#">Top 250 Movies</a></li>
+          <li><a href="#">Most Popular</a></li>
+          <li><a href="#">Browse Genres</a></li>
+          <li><a href="#">Oscar Winners</a></li>
+          <li><a href="#">Box Office</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-md-6">
+        <h6 class="text-warning fw-bold mb-3 text-uppercase small">TV Shows</h6>
+        <ul class="list-unstyled footer-links">
+          <li><a href="#">Top 250 TV</a></li>
+          <li><a href="#">Most Popular</a></li>
+          <li><a href="#">Browse Genres</a></li>
+          <li><a href="#">Emmy Winners</a></li>
+          <li><a href="#">Streaming</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-md-6">
+        <h6 class="text-warning fw-bold mb-3 text-uppercase small">Community</h6>
+        <ul class="list-unstyled footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contribute</a></li>
+          <li><a href="#">Polls</a></li>
+          <li><a href="#">Forum</a></li>
+          <li><a href="#">IMDb Pro</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <h6 class="text-warning fw-bold mb-3 text-uppercase small">IMDb Apps</h6>
+        <p class="text-muted small mb-3">Get the IMDb app on your device</p>
+        <div class="d-flex flex-column gap-2">
+          <a href="#" class="app-store-btn d-flex align-items-center gap-2 p-2 rounded-3">
+            <i class="bi bi-apple fs-4"></i>
+            <div>
+              <div class="store-label">Download on the</div>
+              <div class="fw-bold">App Store</div>
+            </div>
+          </a>
+          <a href="#" class="app-store-btn d-flex align-items-center gap-2 p-2 rounded-3">
+            <i class="bi bi-google-play fs-4"></i>
+            <div>
+              <div class="store-label">Get it on</div>
+              <div class="fw-bold">Google Play</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <hr class="border-secondary"/>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <p class="text-muted small mb-0">© 2025 IMDb Clone. Designed for demonstration purposes only.</p>
+      <div class="d-flex gap-3 flex-wrap">
+        <a href="#" class="text-muted small text-decoration-none hover-warning">Privacy Policy</a>
+        <a href="#" class="text-muted small text-decoration-none hover-warning">Terms of Service</a>
+        <a href="#" class="text-muted small text-decoration-none hover-warning">Cookie Settings</a>
+        <a href="#" class="text-muted small text-decoration-none hover-warning">Ad Preferences</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast Notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
+  <div id="mainToast" class="toast align-items-center border-0 text-white" role="alert" aria-live="assertive">
+    <div class="d-flex">
+      <div class="toast-body fw-500" id="toastBody">
+        Added to watchlist!
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+  <i class="bi bi-chevron-up"></i>
+</button>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- App JS (order matters!) -->
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/tmdb.js"></script>
+<script src="js/app.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>
