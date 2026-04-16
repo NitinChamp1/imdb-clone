@@ -316,7 +316,7 @@ async function loadReviewsFromFirestore(movieId, type) {
             </div>
             ${r.rating ? `<div class="d-flex align-items-center gap-1 text-warning fw-700 small"><i class="bi bi-star-fill"></i>${r.rating}/10</div>` : ''}
           </div>
-          <p class="text-light small mb-2 lh-base" style="opacity:0.85;">${r.text}</p>
+          <p class="small mb-2 lh-base" style="color:#e8e8e8;">${r.text}</p>
         </div>`;
       container.insertAdjacentHTML('afterbegin', reviewHTML);
     });
@@ -338,14 +338,14 @@ function generateMockReviews(item) {
           <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--imdb-yellow),#c9a60c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;font-size:0.85rem;">${r.name[0]}</div>
           <div>
             <div class="fw-600 small text-white">${r.name}</div>
-            <div class="text-light" style="font-size:0.7rem; opacity: 0.75;">${r.date}</div>
+            <div class="text-muted" style="font-size:0.7rem;">${r.date}</div>
           </div>
         </div>
         <div class="d-flex align-items-center gap-1 text-warning fw-700 small">
           <i class="bi bi-star-fill"></i>${r.rating.toFixed(1)}
         </div>
       </div>
-      <p class="text-light small mb-2 lh-base" style="opacity:0.85;">${r.text}</p>
+      <p class="small mb-2 lh-base" style="color:#e8e8e8;">${r.text}</p>
       <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" style="font-size:0.75rem;" onclick="this.innerHTML='<i class=\'bi bi-hand-thumbs-up-fill me-1 text-warning\'></i>' + (parseInt(this.dataset.likes) + 1) + ' Helpful'" data-likes="${r.likes}">
         <i class="bi bi-hand-thumbs-up me-1"></i>${r.likes} Helpful
       </button>
@@ -438,7 +438,7 @@ async function submitReview() {
         </div>
         ${rating ? `<div class="d-flex align-items-center gap-1 text-warning fw-700 small"><i class="bi bi-star-fill"></i>${rating}/10</div>` : '<span class="badge bg-success">New</span>'}
       </div>
-      <p class="text-light small mb-0 lh-base" style="opacity:0.85;">${text}</p>
+      <p class="small mb-0 lh-base" style="color:#e8e8e8;">${text}</p>
     </div>`;
   container.insertAdjacentHTML('afterbegin', newReview);
   document.getElementById('reviewText').value = '';
