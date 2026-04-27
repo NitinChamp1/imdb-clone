@@ -1,5 +1,5 @@
 /* ============================================================
-   data.js — All mock movie/TV data for the IMDb Clone
+   data.js — All mock movie/TV data for the RNDb Clone
    ============================================================ */
 
 const MOVIES = [

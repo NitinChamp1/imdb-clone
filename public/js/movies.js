@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (pageTitle) pageTitle.textContent = titleText;
     
     // Also update breadcrumb and document title
-    document.title = `${titleText} – IMDb Clone`;
+    document.title = `${titleText} – RNDb Clone`;
     const breadcrumb = document.querySelector('.breadcrumb .active');
     if (breadcrumb) breadcrumb.textContent = titleText;
 

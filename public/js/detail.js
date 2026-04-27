@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  document.getElementById('pageTitle').textContent = `${item.title} (${item.year}) – IMDb Clone`;
+  document.getElementById('pageTitle').textContent = `${item.title} (${item.year}) – RNDb Clone`;
   addToRecentlyViewed({ id: item.id, title: item.title, poster: item.poster, year: item.year, rating: item.rating, type: item.type });
 
   const inWL = isInWatchlist(item.id);
@@ -72,10 +72,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           <img src="${item.poster}" class="detail-poster d-none d-md-block" alt="${item.title}" onerror="this.style.display='none'"/>
           <div class="flex-grow-1">
             <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-              <span class="badge bg-warning text-dark fs-6 px-3">IMDb</span>
+              <span class="badge bg-warning text-dark fs-6 px-3">RNDb</span>
               ${item.pg ? `<span class="badge bg-secondary px-3">${item.pg}</span>` : ''}
               ${type === 'tv' ? '<span class="badge bg-info text-dark px-3">TV Series</span>' : ''}
-              ${item.ranked <= 10 ? `<span class="badge bg-danger px-3">Top 10 IMDb</span>` : ''}
+              ${item.ranked <= 10 ? `<span class="badge bg-danger px-3">Top 10 RNDb</span>` : ''}
             </div>
             <h1 class="hero-title mb-1">${item.title}</h1>
             <div class="hero-meta mb-3">
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="d-flex flex-wrap gap-3 mb-3">
               <!-- Rating Box -->
               <div class="rating-box">
-                <div class="text-light small mb-1" style="opacity: 0.85;">IMDb Rating</div>
+                <div class="text-light small mb-1" style="opacity: 0.85;">RNDb Rating</div>
                 <div class="rating-value"><i class="bi bi-star-fill text-warning me-1" style="font-size:1.4rem;"></i>${item.rating}</div>
                 <div class="rating-count" style="color: #bbb;">${item.votes} votes</div>
               </div>
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               </div>
               ${item.ranked ? `
               <div class="rating-box">
-                <div class="text-light small mb-1" style="opacity: 0.85;">IMDb Rank</div>
+                <div class="text-light small mb-1" style="opacity: 0.85;">RNDb Rank</div>
                 <div class="rating-value text-warning">#${item.ranked}</div>
                 <div class="rating-count" style="color: #bbb;">Top Movies</div>
               </div>` : ''}
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                   </div>
                   <div class="col-6 text-center">
                     <div class="fw-700 text-warning fs-5">#${item.ranked || '—'}</div>
-                    <div class="text-muted small">IMDb Rank</div>
+                    <div class="text-muted small">RNDb Rank</div>
                   </div>
                 </div>
               </div>
@@ -276,10 +276,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     </div>` : ''}
 
     <!-- FOOTER -->
-    <footer class="imdb-footer py-4">
+    <footer class="rndb-footer py-4">
       <div class="container-fluid px-4 text-center">
-        <span class="imdb-logo mb-2 d-inline-block" style="font-size:1.2rem;">IMDb</span>
-        <p class="text-muted small mb-0">© 2025 IMDb Clone — Demo purposes only.</p>
+        <span class="rndb-logo mb-2 d-inline-block" style="font-size:1.2rem;">RNDb</span>
+        <p class="text-muted small mb-0">© 2025 RNDb Clone — Demo purposes only.</p>
       </div>
     </footer>`;
   // Load real reviews from Firestore
@@ -346,7 +346,7 @@ function generateMockReviews(item) {
     <div class="review-card mb-3">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <div class="d-flex align-items-center gap-2">
-          <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--imdb-yellow),#c9a60c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;font-size:0.85rem;">${r.name[0]}</div>
+          <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--rndb-yellow),#c9a60c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;font-size:0.85rem;">${r.name[0]}</div>
           <div>
             <div class="fw-600 small text-white">${r.name}</div>
             <div class="text-muted" style="font-size:0.7rem;">${r.date}</div>
@@ -364,7 +364,7 @@ function generateMockReviews(item) {
 }
 
 // User Rating
-const USER_RATINGS_KEY = 'imdb_clone_ratings';
+const USER_RATINGS_KEY = 'rndb_clone_ratings';
 let tempSelectedRating = 0;
 
 function getUserRating(id) {
@@ -539,7 +539,7 @@ async function submitReview() {
 
 function shareMovie(title) {
   if (navigator.share) {
-    navigator.share({ title: `${title} – IMDb Clone`, url: window.location.href });
+    navigator.share({ title: `${title} – RNDb Clone`, url: window.location.href });
   } else {
     navigator.clipboard.writeText(window.location.href).then(() => {
       showToast('<i class="bi bi-link-45deg me-2 text-warning"></i>Link copied to clipboard!');

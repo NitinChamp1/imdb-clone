@@ -1,5 +1,5 @@
 /* ============================================
-   IMDb CLONE - CUSTOM CSS
+   RNDb CLONE - CUSTOM CSS
    Bootstrap 5 Dark Theme + Premium UI
    ============================================ */
 
@@ -7,17 +7,17 @@
 
 /* ---- CSS Variables ---- */
 :root {
-  --imdb-yellow: #f5c518;
-  --imdb-yellow-dark: #c9a60c;
-  --imdb-bg: #121212;
-  --imdb-dark: #1a1a1a;
-  --imdb-darker: #0d0d0d;
-  --imdb-card: #1e1e1e;
-  --imdb-card-hover: #252525;
-  --imdb-border: rgba(255,255,255,0.06);
-  --imdb-text: #e8e8e8;
-  --imdb-muted: #888;
-  --imdb-danger: #e03c3c;
+  --rndb-yellow: #f5c518;
+  --rndb-yellow-dark: #c9a60c;
+  --rndb-bg: #121212;
+  --rndb-dark: #1a1a1a;
+  --rndb-darker: #0d0d0d;
+  --rndb-card: #1e1e1e;
+  --rndb-card-hover: #252525;
+  --rndb-border: rgba(255,255,255,0.06);
+  --rndb-text: #e8e8e8;
+  --rndb-muted: #888;
+  --rndb-danger: #e03c3c;
   --transition: 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --shadow-card: 0 4px 24px rgba(0,0,0,0.5);
   --shadow-glow: 0 0 20px rgba(245, 197, 24, 0.25);
@@ -31,8 +31,8 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--imdb-bg);
-  color: var(--imdb-text);
+  background-color: var(--rndb-bg);
+  color: var(--rndb-text);
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -42,14 +42,14 @@ body {
 
 /* ---- Scrollbar ---- */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--imdb-darker); }
+::-webkit-scrollbar-track { background: var(--rndb-darker); }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--imdb-yellow); }
+::-webkit-scrollbar-thumb:hover { background: var(--rndb-yellow); }
 
 /* ============================================
    NAVBAR
    ============================================ */
-.imdb-navbar {
+.rndb-navbar {
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1400 100%);
   border-bottom: 1px solid rgba(245, 197, 24, 0.15);
   padding: 0.6rem 0;
@@ -58,13 +58,13 @@ body {
   transition: background var(--transition);
 }
 
-.imdb-navbar.scrolled {
+.rndb-navbar.scrolled {
   background: rgba(10, 10, 10, 0.97) !important;
   box-shadow: 0 2px 20px rgba(0,0,0,0.8);
 }
 
-.imdb-logo {
-  background: var(--imdb-yellow);
+.rndb-logo {
+  background: var(--rndb-yellow);
   color: #000;
   font-size: 1.6rem;
   font-weight: 800;
@@ -75,7 +75,7 @@ body {
   transition: transform var(--transition), box-shadow var(--transition);
 }
 
-.imdb-logo:hover {
+.rndb-logo:hover {
   transform: scale(1.05);
   box-shadow: var(--shadow-glow);
 }
@@ -89,7 +89,7 @@ body {
 
 .nav-pill:hover {
   background: rgba(245, 197, 24, 0.12) !important;
-  color: var(--imdb-yellow) !important;
+  color: var(--rndb-yellow) !important;
 }
 
 /* Search Bar */
@@ -107,7 +107,7 @@ body {
 .search-category-select:focus {
   background: #333;
   color: #fff;
-  border-color: var(--imdb-yellow);
+  border-color: var(--rndb-yellow);
   box-shadow: none;
 }
 
@@ -123,14 +123,14 @@ body {
 .search-input:focus {
   background: #333;
   color: #fff;
-  border-color: var(--imdb-yellow);
+  border-color: var(--rndb-yellow);
   box-shadow: 0 0 0 2px rgba(245, 197, 24, 0.15);
 }
 
 .search-input::placeholder { color: #666; }
 
 .search-btn {
-  background: var(--imdb-yellow);
+  background: var(--rndb-yellow);
   border: none;
   color: #000;
   font-weight: 600;
@@ -138,7 +138,7 @@ body {
 }
 
 .search-btn:hover {
-  background: var(--imdb-yellow-dark);
+  background: var(--rndb-yellow-dark);
   transform: scale(1.05);
 }
 
@@ -182,8 +182,8 @@ body {
 
 .suggestion-info { flex: 1; overflow: hidden; }
 .suggestion-title { font-size: 0.88rem; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.suggestion-meta { font-size: 0.75rem; color: var(--imdb-muted); }
-.suggestion-rating { font-size: 0.78rem; color: var(--imdb-yellow); font-weight: 600; }
+.suggestion-meta { font-size: 0.75rem; color: var(--rndb-muted); }
+.suggestion-rating { font-size: 0.78rem; color: var(--rndb-yellow); font-weight: 600; }
 
 /* Mega menu */
 .mega-menu {
@@ -205,7 +205,7 @@ body {
 
 .mega-menu .dropdown-item:hover {
   background: rgba(245, 197, 24, 0.1);
-  color: var(--imdb-yellow);
+  color: var(--rndb-yellow);
 }
 
 /* Hover Dropdown Animations */
@@ -248,7 +248,7 @@ body {
 }
 .custom-hover-drop .dropdown-item:hover {
   background: rgba(245, 197, 24, 0.1);
-  color: var(--imdb-yellow);
+  color: var(--rndb-yellow);
   padding-left: 1.5rem;
 }
 
@@ -302,7 +302,7 @@ body {
   transition: all var(--transition);
 }
 .hero-indicators .active {
-  background: var(--imdb-yellow);
+  background: var(--rndb-yellow);
   width: 24px;
   border-radius: 4px;
 }
@@ -312,7 +312,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--imdb-yellow);
+  background: var(--rndb-yellow);
   color: #000;
   font-size: 0.78rem;
   font-weight: 700;
@@ -333,7 +333,7 @@ body {
 }
 
 .hero-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-.hero-rating { display: flex; align-items: center; gap: 4px; color: var(--imdb-yellow); font-weight: 700; font-size: 1.1rem; }
+.hero-rating { display: flex; align-items: center; gap: 4px; color: var(--rndb-yellow); font-weight: 700; font-size: 1.1rem; }
 .hero-year { color: #aaa; font-size: 0.9rem; }
 .hero-genre { color: #ccc; font-size: 0.88rem; }
 
@@ -351,7 +351,7 @@ body {
 
 .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .btn-hero-primary {
-  background: var(--imdb-yellow);
+  background: var(--rndb-yellow);
   color: #000;
   font-weight: 700;
   border: none;
@@ -384,8 +384,8 @@ body {
 /* ============================================
    SECTION STYLES
    ============================================ */
-.bg-dark-custom { background-color: var(--imdb-dark, #1a1a1a); }
-.bg-darker-custom { background-color: var(--imdb-darker, #0d0d0d); }
+.bg-dark-custom { background-color: var(--rndb-dark, #1a1a1a); }
+.bg-darker-custom { background-color: var(--rndb-darker, #0d0d0d); }
 
 .section-title {
   font-size: 1.4rem;
@@ -402,7 +402,7 @@ body {
   top: 10%;
   height: 80%;
   width: 4px;
-  background: var(--imdb-yellow);
+  background: var(--rndb-yellow);
   border-radius: 2px;
 }
 
@@ -420,17 +420,17 @@ body {
   transition: all var(--transition);
   white-space: nowrap;
 }
-.genre-tab:hover { background: rgba(245, 197, 24, 0.12); border-color: rgba(245, 197, 24, 0.3); color: var(--imdb-yellow); }
-.genre-tab.active { background: var(--imdb-yellow); color: #000; border-color: var(--imdb-yellow); font-weight: 700; }
+.genre-tab:hover { background: rgba(245, 197, 24, 0.12); border-color: rgba(245, 197, 24, 0.3); color: var(--rndb-yellow); }
+.genre-tab.active { background: var(--rndb-yellow); color: #000; border-color: var(--rndb-yellow); font-weight: 700; }
 
 /* ============================================
    MOVIE CARDS
    ============================================ */
 .movie-card {
-  background: var(--imdb-card);
+  background: var(--rndb-card);
   border-radius: var(--radius-card);
   overflow: hidden;
-  border: 1px solid var(--imdb-border);
+  border: 1px solid var(--rndb-border);
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   cursor: pointer;
   height: 100%;
@@ -441,7 +441,7 @@ body {
   transform: translateY(-6px);
   box-shadow: var(--shadow-card);
   border-color: rgba(245, 197, 24, 0.3);
-  background: var(--imdb-card-hover);
+  background: var(--rndb-card-hover);
 }
 
 .movie-poster-wrap {
@@ -465,7 +465,7 @@ body {
   top: 8px;
   left: 8px;
   background: rgba(0,0,0,0.85);
-  color: var(--imdb-yellow);
+  color: var(--rndb-yellow);
   font-size: 0.75rem;
   font-weight: 800;
   padding: 2px 8px;
@@ -496,8 +496,8 @@ body {
 }
 
 .movie-card:hover .movie-watchlist-btn { opacity: 1; }
-.movie-watchlist-btn:hover { background: var(--imdb-yellow); color: #000; transform: scale(1.1); }
-.movie-watchlist-btn.in-watchlist { opacity: 1; background: var(--imdb-yellow); color: #000; }
+.movie-watchlist-btn:hover { background: var(--rndb-yellow); color: #000; transform: scale(1.1); }
+.movie-watchlist-btn.in-watchlist { opacity: 1; background: var(--rndb-yellow); color: #000; }
 
 .movie-overlay {
   position: absolute;
@@ -519,7 +519,7 @@ body {
 }
 
 .movie-play-btn {
-  background: var(--imdb-yellow);
+  background: var(--rndb-yellow);
   color: #000;
   border: none;
   border-radius: 50%;
@@ -545,10 +545,10 @@ body {
   text-overflow: ellipsis;
   transition: color var(--transition);
 }
-.movie-card:hover .movie-title { color: var(--imdb-yellow); }
+.movie-card:hover .movie-title { color: var(--rndb-yellow); }
 
 .movie-meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
-.movie-year { font-size: 0.78rem; color: var(--imdb-muted); }
+.movie-year { font-size: 0.78rem; color: var(--rndb-muted); }
 .movie-genre-badge {
   font-size: 0.7rem;
   color: #aaa;
@@ -562,12 +562,12 @@ body {
   align-items: center;
   gap: 4px;
   font-size: 0.82rem;
-  color: var(--imdb-yellow);
+  color: var(--rndb-yellow);
   font-weight: 700;
   margin-top: 5px;
 }
 
-.rating-star { color: var(--imdb-yellow); }
+.rating-star { color: var(--rndb-yellow); }
 
 /* ============================================
    HORIZONTAL SCROLL CARDS
@@ -585,10 +585,10 @@ body {
 
 .scroll-card {
   flex: 0 0 160px;
-  background: var(--imdb-card);
+  background: var(--rndb-card);
   border-radius: var(--radius-card);
   overflow: hidden;
-  border: 1px solid var(--imdb-border);
+  border: 1px solid var(--rndb-border);
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
@@ -621,9 +621,9 @@ body {
   margin-bottom: 4px;
   transition: color var(--transition);
 }
-.scroll-card:hover .scroll-card-title { color: var(--imdb-yellow); }
-.scroll-card-rating { font-size: 0.75rem; color: var(--imdb-yellow); font-weight: 700; display: flex; align-items: center; gap: 3px; }
-.scroll-card-year { font-size: 0.72rem; color: var(--imdb-muted); }
+.scroll-card:hover .scroll-card-title { color: var(--rndb-yellow); }
+.scroll-card-rating { font-size: 0.75rem; color: var(--rndb-yellow); font-weight: 700; display: flex; align-items: center; gap: 3px; }
+.scroll-card-year { font-size: 0.72rem; color: var(--rndb-muted); }
 
 .scroll-card-watchlist {
   position: absolute;
@@ -646,7 +646,7 @@ body {
 }
 
 .scroll-card:hover .scroll-card-watchlist { opacity: 1; }
-.scroll-card-watchlist:hover, .scroll-card-watchlist.in-watchlist { background: var(--imdb-yellow); color: #000; opacity: 1; }
+.scroll-card-watchlist:hover, .scroll-card-watchlist.in-watchlist { background: var(--rndb-yellow); color: #000; opacity: 1; }
 
 /* Scroll buttons */
 .scroll-btn {
@@ -663,7 +663,7 @@ body {
   transition: all var(--transition);
   font-size: 1rem;
 }
-.scroll-btn:hover { background: var(--imdb-yellow); border-color: var(--imdb-yellow); color: #000; }
+.scroll-btn:hover { background: var(--rndb-yellow); border-color: var(--rndb-yellow); color: #000; }
 
 /* ============================================
    FAN FAVORITES / FEATURED GRID
@@ -671,9 +671,9 @@ body {
 .fan-fav-card {
   display: flex;
   gap: 12px;
-  background: var(--imdb-card);
+  background: var(--rndb-card);
   border-radius: var(--radius-card);
-  border: 1px solid var(--imdb-border);
+  border: 1px solid var(--rndb-border);
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -683,7 +683,7 @@ body {
 
 .fan-fav-card:hover {
   border-color: rgba(245, 197, 24, 0.3);
-  background: var(--imdb-card-hover);
+  background: var(--rndb-card-hover);
   transform: translateX(4px);
 }
 
@@ -697,7 +697,7 @@ body {
 }
 
 .fan-fav-info { flex: 1; overflow: hidden; }
-.fan-fav-rank { font-size: 0.72rem; color: var(--imdb-muted); margin-bottom: 3px; }
+.fan-fav-rank { font-size: 0.72rem; color: var(--rndb-muted); margin-bottom: 3px; }
 .fan-fav-title {
   font-size: 0.88rem;
   font-weight: 600;
@@ -708,9 +708,9 @@ body {
   text-overflow: ellipsis;
   transition: color var(--transition);
 }
-.fan-fav-card:hover .fan-fav-title { color: var(--imdb-yellow); }
-.fan-fav-rating { font-size: 0.82rem; color: var(--imdb-yellow); font-weight: 700; display: flex; align-items: center; gap: 3px; margin-bottom: 5px; }
-.fan-fav-year { font-size: 0.75rem; color: var(--imdb-muted); }
+.fan-fav-card:hover .fan-fav-title { color: var(--rndb-yellow); }
+.fan-fav-rating { font-size: 0.82rem; color: var(--rndb-yellow); font-weight: 700; display: flex; align-items: center; gap: 3px; margin-bottom: 5px; }
+.fan-fav-year { font-size: 0.75rem; color: var(--rndb-muted); }
 .fan-fav-genre { font-size: 0.72rem; color: #aaa; }
 
 .watchlist-btn-sm {
@@ -728,13 +728,13 @@ body {
   white-space: nowrap;
   margin-top: 8px;
 }
-.watchlist-btn-sm:hover { border-color: var(--imdb-yellow); color: var(--imdb-yellow); }
-.watchlist-btn-sm.in-watchlist { background: var(--imdb-yellow); border-color: var(--imdb-yellow); color: #000; }
+.watchlist-btn-sm:hover { border-color: var(--rndb-yellow); color: var(--rndb-yellow); }
+.watchlist-btn-sm.in-watchlist { background: var(--rndb-yellow); border-color: var(--rndb-yellow); color: #000; }
 
 /* ============================================
-   IMDb ORIGINALS BANNER
+   RNDb ORIGINALS BANNER
    ============================================ */
-.imdb-originals-banner {
+.rndb-originals-banner {
   background: linear-gradient(135deg, #1a1200 0%, #0a0a00 50%, #001a0a 100%);
   border-top: 1px solid rgba(245, 197, 24, 0.12);
   border-bottom: 1px solid rgba(245, 197, 24, 0.12);
@@ -755,7 +755,7 @@ body {
 /* ============================================
    NEWSLETTER
    ============================================ */
-.newsletter-section { background: var(--imdb-dark); }
+.newsletter-section { background: var(--rndb-dark); }
 .newsletter-card {
   background: linear-gradient(135deg, #1e1400 0%, #101010 100%);
   border: 1px solid rgba(245, 197, 24, 0.15);
@@ -764,7 +764,7 @@ body {
 /* ============================================
    FOOTER
    ============================================ */
-.imdb-footer {
+.rndb-footer {
   background: #090909;
   border-top: 1px solid rgba(255,255,255,0.05);
 }
@@ -772,12 +772,12 @@ body {
 .footer-links { list-style: none; padding: 0; margin: 0; }
 .footer-links li { margin-bottom: 8px; }
 .footer-links a {
-  color: var(--imdb-muted);
+  color: var(--rndb-muted);
   text-decoration: none;
   font-size: 0.85rem;
   transition: color var(--transition);
 }
-.footer-links a:hover { color: var(--imdb-yellow); }
+.footer-links a:hover { color: var(--rndb-yellow); }
 
 .social-icon {
   width: 36px;
@@ -793,7 +793,7 @@ body {
   text-decoration: none;
   transition: all var(--transition);
 }
-.social-icon:hover { background: var(--imdb-yellow); border-color: var(--imdb-yellow); color: #000; transform: translateY(-2px); }
+.social-icon:hover { background: var(--rndb-yellow); border-color: var(--rndb-yellow); color: #000; transform: translateY(-2px); }
 
 .app-store-btn {
   background: rgba(255,255,255,0.04);
@@ -805,7 +805,7 @@ body {
 }
 .app-store-btn:hover { background: rgba(245, 197, 24, 0.1); border-color: rgba(245, 197, 24, 0.3); color: #fff; }
 .store-label { font-size: 0.65rem; color: #888; line-height: 1; }
-.hover-warning:hover { color: var(--imdb-yellow) !important; }
+.hover-warning:hover { color: var(--rndb-yellow) !important; }
 
 /* ============================================
    BACK TO TOP
@@ -816,7 +816,7 @@ body {
   right: 28px;
   width: 44px;
   height: 44px;
-  background: var(--imdb-yellow);
+  background: var(--rndb-yellow);
   color: #000;
   border: none;
   border-radius: 50%;
@@ -832,7 +832,7 @@ body {
   box-shadow: 0 4px 16px rgba(245, 197, 24, 0.4);
 }
 .back-to-top.visible { opacity: 1; transform: translateY(0); }
-.back-to-top:hover { background: var(--imdb-yellow-dark); transform: translateY(-3px); }
+.back-to-top:hover { background: var(--rndb-yellow-dark); transform: translateY(-3px); }
 
 /* ============================================
    TOAST
@@ -875,7 +875,7 @@ body {
   gap: 2px;
   align-items: center;
 }
-.star-icon { color: var(--imdb-yellow); font-size: 0.9rem; }
+.star-icon { color: var(--rndb-yellow); font-size: 0.9rem; }
 
 .rating-box {
   background: rgba(255,255,255,0.05);
@@ -884,8 +884,8 @@ body {
   padding: 14px 18px;
   text-align: center;
 }
-.rating-value { font-size: 2rem; font-weight: 800; color: var(--imdb-yellow); line-height: 1; }
-.rating-count { font-size: 0.75rem; color: var(--imdb-muted); margin-top: 2px; }
+.rating-value { font-size: 2rem; font-weight: 800; color: var(--rndb-yellow); line-height: 1; }
+.rating-count { font-size: 0.75rem; color: var(--rndb-muted); margin-top: 2px; }
 
 .genre-pill {
   background: rgba(255,255,255,0.06);
@@ -898,7 +898,7 @@ body {
   transition: all var(--transition);
   cursor: pointer;
 }
-.genre-pill:hover { background: rgba(245, 197, 24, 0.12); border-color: rgba(245, 197, 24, 0.4); color: var(--imdb-yellow); }
+.genre-pill:hover { background: rgba(245, 197, 24, 0.12); border-color: rgba(245, 197, 24, 0.4); color: var(--rndb-yellow); }
 
 .cast-card {
   text-align: center;
@@ -917,9 +917,9 @@ body {
   display: block;
   transition: border-color var(--transition);
 }
-.cast-card:hover .cast-img { border-color: var(--imdb-yellow); }
+.cast-card:hover .cast-img { border-color: var(--rndb-yellow); }
 .cast-name { font-size: 0.78rem; font-weight: 600; color: #ddd; }
-.cast-role { font-size: 0.7rem; color: var(--imdb-muted); }
+.cast-role { font-size: 0.7rem; color: var(--rndb-muted); }
 
 /* User Rate Stars */
 .user-rate-stars {
@@ -942,12 +942,12 @@ body {
 }
 .rate-star * { pointer-events: none; }
 .rate-star.active {
-  color: var(--imdb-yellow);
+  color: var(--rndb-yellow);
   transform: scale(1.25);
   text-shadow: 0 0 12px rgba(245,197,24,0.6);
 }
 .rate-star.hovered {
-  color: var(--imdb-yellow);
+  color: var(--rndb-yellow);
   transform: scale(1.18);
   text-shadow: 0 0 8px rgba(245,197,24,0.4);
 }
@@ -977,8 +977,8 @@ body {
   transition: color 0.3s, border-color 0.3s;
 }
 #authModal .nav-tabs .nav-link.active {
-  color: var(--imdb-yellow);
-  border-bottom-color: var(--imdb-yellow);
+  color: var(--rndb-yellow);
+  border-bottom-color: var(--rndb-yellow);
   background: transparent;
 }
 #authModal .form-control {
@@ -990,7 +990,7 @@ body {
 }
 #authModal .form-control:focus {
   background: rgba(255,255,255,0.09);
-  border-color: var(--imdb-yellow);
+  border-color: var(--rndb-yellow);
   box-shadow: 0 0 0 3px rgba(245,197,24,0.15);
   color: #fff;
 }
@@ -1024,8 +1024,8 @@ body {
 
 /* Review card */
 .review-card {
-  background: var(--imdb-card);
-  border: 1px solid var(--imdb-border);
+  background: var(--rndb-card);
+  border: 1px solid var(--rndb-border);
   border-radius: 12px;
   padding: 16px;
   transition: all var(--transition);
@@ -1036,8 +1036,8 @@ body {
    MOVIES BROWSE PAGE
    ============================================ */
 .filter-bar {
-  background: var(--imdb-dark);
-  border: 1px solid var(--imdb-border);
+  background: var(--rndb-dark);
+  border: 1px solid var(--rndb-border);
   border-radius: 14px;
   padding: 16px 20px;
   margin-bottom: 24px;
@@ -1053,15 +1053,15 @@ body {
   transition: all var(--transition);
   cursor: pointer;
 }
-.filter-select:focus { background: rgba(255,255,255,0.08); border-color: var(--imdb-yellow); box-shadow: 0 0 0 2px rgba(245, 197, 24, 0.15); color: #fff; }
+.filter-select:focus { background: rgba(255,255,255,0.08); border-color: var(--rndb-yellow); box-shadow: 0 0 0 2px rgba(245, 197, 24, 0.15); color: #fff; }
 .filter-select option { background: #1e1e1e; color: #fff; }
 
 /* ============================================
    WATCHLIST PAGE
    ============================================ */
 .watchlist-item {
-  background: var(--imdb-card);
-  border: 1px solid var(--imdb-border);
+  background: var(--rndb-card);
+  border: 1px solid var(--rndb-border);
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -1071,14 +1071,14 @@ body {
 .watchlist-poster { width: 90px; object-fit: cover; flex-shrink: 0; }
 .watchlist-info { padding: 14px; flex: 1; }
 .watchlist-title { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
-.watchlist-meta { font-size: 0.82rem; color: var(--imdb-muted); margin-bottom: 8px; }
-.watchlist-rating { font-size: 0.88rem; color: var(--imdb-yellow); font-weight: 700; }
+.watchlist-meta { font-size: 0.82rem; color: var(--rndb-muted); margin-bottom: 8px; }
+.watchlist-rating { font-size: 0.88rem; color: var(--rndb-yellow); font-weight: 700; }
 .watchlist-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 
 .empty-watchlist {
   text-align: center;
   padding: 60px 20px;
-  color: var(--imdb-muted);
+  color: var(--rndb-muted);
 }
 .empty-watchlist i { font-size: 4rem; margin-bottom: 16px; display: block; }
 .empty-watchlist h4 { color: #ddd; }
@@ -1086,7 +1086,7 @@ body {
 /* ============================================
    TV SHOWS PAGE
    ============================================ */
-.tv-card { background: var(--imdb-card); border-radius: var(--radius-card); overflow: hidden; border: 1px solid var(--imdb-border); transition: all 0.3s ease; cursor: pointer; }
+.tv-card { background: var(--rndb-card); border-radius: var(--radius-card); overflow: hidden; border: 1px solid var(--rndb-border); transition: all 0.3s ease; cursor: pointer; }
 .tv-card:hover { transform: translateY(-5px); border-color: rgba(245, 197, 24, 0.3); box-shadow: var(--shadow-card); }
 
 /* ============================================
@@ -1142,13 +1142,13 @@ body {
 
 /* Progress bar override */
 .progress { background: rgba(255,255,255,0.06); }
-.progress-bar { background: var(--imdb-yellow); }
+.progress-bar { background: var(--rndb-yellow); }
 
 /* Dropdown dark fix */
 .dropdown-menu-dark { background: #1a1a1a; border-color: rgba(255,255,255,0.08); }
 
-/* Badge IMDb */
-.badge-imdb { background: var(--imdb-yellow); color: #000; font-weight: 700; }
+/* Badge RNDb */
+.badge-imdb { background: var(--rndb-yellow); color: #000; font-weight: 700; }
 
 /* ============================================
    EMPTY WATCHLIST CTA CARDS
@@ -1279,7 +1279,7 @@ body {
 }
 
 /* TMDb Clean Sections */
-.custom-pill-toggle { display: inline-flex; align-items: center; border: 1px solid var(--imdb-yellow); border-radius: 30px; position: relative; overflow: hidden; background: rgba(0,0,0,0.5); height: 34px; } .custom-pill-toggle .toggle-btn { background: transparent; border: none; color: #fff; padding: 0 16px; height: 100%; cursor: pointer; z-index: 2; font-size: 0.9rem; font-weight: 600; border-radius: 30px; transition: color 0.3s ease; } .custom-pill-toggle .toggle-btn.active { color: #000; } .custom-pill-toggle .toggle-bg { position: absolute; top: 0; left: 0; bottom: 0; background: var(--imdb-yellow); border-radius: 30px; z-index: 1; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); width: 0; } 
+.custom-pill-toggle { display: inline-flex; align-items: center; border: 1px solid var(--rndb-yellow); border-radius: 30px; position: relative; overflow: hidden; background: rgba(0,0,0,0.5); height: 34px; } .custom-pill-toggle .toggle-btn { background: transparent; border: none; color: #fff; padding: 0 16px; height: 100%; cursor: pointer; z-index: 2; font-size: 0.9rem; font-weight: 600; border-radius: 30px; transition: color 0.3s ease; } .custom-pill-toggle .toggle-btn.active { color: #000; } .custom-pill-toggle .toggle-bg { position: absolute; top: 0; left: 0; bottom: 0; background: var(--rndb-yellow); border-radius: 30px; z-index: 1; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); width: 0; } 
 .tmdb-clean-card { width: 150px; flex-shrink: 0; cursor: pointer; position: relative; display: flex; flex-direction: column; } .tmdb-clean-card .poster-wrapper { width: 100%; aspect-ratio: 2/3; border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.5); margin-bottom: 12px; } .tmdb-clean-card .poster-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; } .tmdb-clean-card:hover .poster-wrapper img { transform: scale(1.05); } .tmdb-clean-card h6 { font-size: 0.95rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; } .tmdb-clean-card p { color: #aaa; font-size: 0.8rem; margin-bottom: 0; }
 
 /* Global override to make muted text more visible on dark backgrounds */

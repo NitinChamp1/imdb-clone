@@ -1,5 +1,5 @@
 /* ============================================================
-   home.js — Homepage-specific JS for IMDb Clone
+   home.js — Homepage-specific JS for RNDb Clone
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -142,7 +142,7 @@ function initHeroCarousel(liveData) {
           <div class="row">
             <div class="col-md-8 col-lg-6">
               <div class="hero-badge">
-                <i class="bi bi-star-fill"></i> IMDb Top ${m.ranked}
+                <i class="bi bi-star-fill"></i> RNDb Top ${m.ranked}
               </div>
               <h1 class="hero-title">${m.title}</h1>
               <div class="hero-meta">

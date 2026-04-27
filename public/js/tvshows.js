@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const pageTitle = document.querySelector('.section-title');
     if (pageTitle) pageTitle.textContent = titleText;
-    document.title = `${titleText} – IMDb Clone`;
+    document.title = `${titleText} – RNDb Clone`;
     
     // Hide filter buttons
     document.querySelectorAll('.tv-filter-btn').forEach(b => b.parentElement.style.display = 'none');
@@ -175,7 +175,7 @@ function renderTop5TV() {
         onclick="goToDetail(${show.id}, 'tv')" 
         onmouseenter="this.style.borderColor='rgba(245,197,24,0.3)';this.style.background='rgba(255,255,255,0.05)'"
         onmouseleave="this.style.borderColor='rgba(255,255,255,0.06)';this.style.background='rgba(255,255,255,0.03)'">
-        <div style="font-size:2.5rem;font-weight:900;color:${i === 0 ? 'var(--imdb-yellow)' : '#444'};width:50px;text-align:center;flex-shrink:0;">0${i + 1}</div>
+        <div style="font-size:2.5rem;font-weight:900;color:${i === 0 ? 'var(--rndb-yellow)' : '#444'};width:50px;text-align:center;flex-shrink:0;">0${i + 1}</div>
         <img src="${show.poster}" style="width:60px;height:85px;object-fit:cover;border-radius:8px;flex-shrink:0;" alt="${show.title}" loading="lazy"/>
         <div class="flex-grow-1">
           <h6 class="text-white fw-bold mb-1">${show.title}</h6>

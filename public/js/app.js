@@ -1,9 +1,9 @@
 /* ============================================================
-   app.js — Shared utilities for IMDb Clone
+   app.js — Shared utilities for RNDb Clone
    ============================================================ */
 
 // ---- Watchlist Management (localStorage) ----
-const WATCHLIST_KEY = 'imdb_clone_watchlist';
+const WATCHLIST_KEY = 'rndb_clone_watchlist';
 
 function getWatchlist() {
   try { return JSON.parse(localStorage.getItem(WATCHLIST_KEY)) || []; }
@@ -184,7 +184,7 @@ function subscribeNewsletter(e) {
 }
 
 // ---- Recently Viewed ----
-const RECENT_KEY = 'imdb_clone_recent';
+const RECENT_KEY = 'rndb_clone_recent';
 function addToRecentlyViewed(item) {
   let recent = getRecentlyViewed();
   recent = recent.filter(r => r.id !== item.id);
@@ -289,11 +289,11 @@ function ensureAuthUI() {
         <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
           <div class="modal-content bg-dark text-white border-secondary">
             <div class="modal-header border-0">
-              <h5 class="modal-title fw-bold">Sign In to IMDb</h5>
+              <h5 class="modal-title fw-bold">Sign In to RNDb</h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body px-4 pb-4">
-              <div class="text-center mb-4"><span class="imdb-logo fs-3">IMDb</span></div>
+              <div class="text-center mb-4"><span class="rndb-logo fs-3">RNDb</span></div>
               <button class="btn btn-outline-light w-100 rounded-pill mb-3 d-flex align-items-center justify-content-center gap-2" onclick="loginWithGoogle()">
                 <i class="bi bi-google"></i> Sign in with Google
               </button>
