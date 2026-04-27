@@ -1256,6 +1256,19 @@ body {
 .empty-cta-movies:hover .empty-cta-label { color: #f5c518; }
 .empty-cta-tv:hover .empty-cta-label { color: #63b3ed; }
 
+/* Fix Hero Carousel Controls Position */
+#heroCarousel .carousel-control-prev,
+#heroCarousel .carousel-control-next {
+  align-items: flex-end;
+  padding-bottom: 50px;
+}
+
+#heroCarousel .carousel-control-prev-icon,
+#heroCarousel .carousel-control-next-icon {
+  width: 3rem;
+  height: 3rem;
+}
+
 /* ============================================
    RESPONSIVE
    ============================================ */
