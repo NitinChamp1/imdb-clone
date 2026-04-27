@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="user-rate-stars" id="rateStars">
                   ${[1,2,3,4,5,6,7,8,9,10].map(n => `
                     <i class="bi bi-star${userRating >= n ? '-fill' : ''} rate-star ${userRating >= n ? 'active' : ''}" 
-                       data-val="${n}" onclick="rateMovie(${item.id}, ${n})" onmouseover="hoverStars(${n})" onmouseout="resetStars(${item.id})"></i>`).join('')}
+                       data-val="${n}" onclick="rateMovie(${item.id}, ${n})"></i>`).join('')}
                 </div>
                 <div class="rating-count mt-1" id="userRatingText" style="color: #bbb;">${userRating ? `You rated: ${userRating}/10` : 'Click to rate'}</div>
               </div>
@@ -288,6 +288,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const box = document.getElementById('writeReviewBox');
     if (box) box.style.display = 'block';
   }
+
+  // Attach flicker-free container-level star hover
+  initStarHover(id);
 });
 
 async function loadReviewsFromFirestore(movieId, type) {
@@ -387,13 +390,43 @@ function rateMovie(id, val) {
 }
 function hoverStars(val) {
   document.querySelectorAll('.rate-star').forEach((s, i) => {
-    s.className = `bi bi-star${i < val ? '-fill' : ''} rate-star${i < val ? ' active' : ''}`;
+    const isLit = i < val;
+    // Toggle icon class WITHOUT replacing the whole className (avoids flash/flicker)
+    s.classList.toggle('bi-star-fill', isLit);
+    s.classList.toggle('bi-star', !isLit);
+    s.classList.toggle('hovered', isLit);
+    s.classList.remove('active'); // clear active during hover preview
   });
 }
 function resetStars(id) { updateStarsDisplay(getUserRating(id)); }
 function updateStarsDisplay(val) {
   document.querySelectorAll('.rate-star').forEach((s, i) => {
-    s.className = `bi bi-star${i < val ? '-fill' : ''} rate-star${i < val ? ' active' : ''}`;
+    const isLit = i < val;
+    s.classList.toggle('bi-star-fill', isLit);
+    s.classList.toggle('bi-star', !isLit);
+    s.classList.toggle('active', isLit);
+    s.classList.remove('hovered');
+  });
+}
+
+/* ── Flicker-free hover: one listener on the container, not each star ── */
+function initStarHover(movieId) {
+  const container = document.getElementById('rateStars');
+  if (!container) return;
+
+  let lastVal = -1;
+  container.addEventListener('mousemove', (e) => {
+    const star = e.target.closest('.rate-star');
+    if (!star) return;
+    const val = parseInt(star.dataset.val, 10);
+    if (val === lastVal) return; // throttle: only update when star changes
+    lastVal = val;
+    hoverStars(val);
+  });
+
+  container.addEventListener('mouseleave', () => {
+    lastVal = -1;
+    resetStars(movieId);
   });
 }
 
@@ -412,6 +445,14 @@ function handleWatchlistToggle(id, title, poster, year, rating) {
 }
 
 async function submitReview() {
+  // Auth gate — open sign-in modal if not logged in
+  const user = (typeof auth !== 'undefined') ? auth.currentUser : null;
+  if (!user) {
+    const modal = new bootstrap.Modal(document.getElementById('authModal'));
+    modal.show();
+    return;
+  }
+
   const text = document.getElementById('reviewText').value.trim();
   if (!text) { showToast('<i class="bi bi-exclamation-triangle me-2 text-warning"></i>Please write something!', 'danger'); return; }
 
@@ -420,9 +461,7 @@ async function submitReview() {
   const movieId = params.get('id');
   const type = params.get('type') || 'movie';
 
-  // Get logged-in user info
-  const user = (typeof auth !== 'undefined') ? auth.currentUser : null;
-  const displayName = user ? (user.displayName || user.email || 'Anonymous') : 'Anonymous';
+  const displayName = user.displayName || user.email || 'Anonymous';
   const rating = getUserRating(parseInt(movieId)) || null;
 
   // Save to Firestore
@@ -470,5 +509,55 @@ function shareMovie(title) {
     navigator.clipboard.writeText(window.location.href).then(() => {
       showToast('<i class="bi bi-link-45deg me-2 text-warning"></i>Link copied to clipboard!');
     });
+  }
+}
+
+/* ── Auth Modal Handlers ── */
+function closeAuthModal() {
+  const el = document.getElementById('authModal');
+  if (el) bootstrap.Modal.getInstance(el)?.hide();
+}
+
+async function handleGoogleAuth() {
+  try {
+    await googleLogin();
+    closeAuthModal();
+    showToast('<i class="bi bi-check-circle-fill me-2 text-success"></i>Signed in with Google!');
+  } catch (err) {
+    showToast('<i class="bi bi-x-circle me-2 text-danger"></i>' + (err.message || 'Google sign-in failed'), 'danger');
+  }
+}
+
+async function handleEmailSignIn() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  if (!email || !password) { errEl.textContent = 'Please fill in all fields.'; errEl.style.display = 'block'; return; }
+  try {
+    await loginUser(email, password);
+    closeAuthModal();
+    showToast('<i class="bi bi-check-circle-fill me-2 text-success"></i>Signed in successfully!');
+  } catch (err) {
+    errEl.textContent = err.message || 'Sign-in failed. Check your credentials.';
+    errEl.style.display = 'block';
+  }
+}
+
+async function handleEmailSignUp() {
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  const errEl = document.getElementById('signupError');
+  errEl.style.display = 'none';
+  if (!email || !password) { errEl.textContent = 'Please fill in all fields.'; errEl.style.display = 'block'; return; }
+  try {
+    const cred = await signupUser(email, password);
+    if (name && cred.user) await cred.user.updateProfile({ displayName: name });
+    closeAuthModal();
+    showToast('<i class="bi bi-check-circle-fill me-2 text-success"></i>Account created! Welcome 🎉');
+  } catch (err) {
+    errEl.textContent = err.message || 'Sign-up failed. Try again.';
+    errEl.style.display = 'block';
   }
 }
