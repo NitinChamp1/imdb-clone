@@ -179,12 +179,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             <!-- User Reviews Section -->
             <h3 class="section-title mb-4">Reviews</h3>
-            <div id="reviewsContainer">
-              ${generateMockReviews(item)}
-            </div>
 
             <!-- Write Review (hidden until a star is clicked) -->
-            <div class="review-card mt-4" id="writeReviewBox" style="display:none; overflow:hidden; transition: all 0.4s ease;">
+            <div class="review-card mb-4" id="writeReviewBox" style="display:none; overflow:hidden; transition: all 0.4s ease;">
               <h5 class="text-white mb-3"><i class="bi bi-pencil-square me-2 text-warning"></i>Write a Review</h5>
               <textarea class="form-control bg-transparent border-secondary text-white mb-3 custom-placeholder" id="reviewText" rows="3" placeholder="Share your thoughts about this movie..." style="resize:none;"></textarea>
               <div class="d-flex justify-content-between align-items-center">
@@ -193,6 +190,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                   <i class="bi bi-send me-1"></i>Submit
                 </button>
               </div>
+            </div>
+
+            <div id="reviewsContainer">
+              ${generateMockReviews(item)}
             </div>
           </div>
 
