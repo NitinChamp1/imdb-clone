@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Person Details – IMDb Clone</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="css/style.css" rel="stylesheet"/>
+  <style>
+    .bio-text { white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6; color: #ccc; }
+    .credits-table { border: 1px solid #333; }
+    .credits-table th, .credits-table td { border-bottom: 1px solid #333; color: #fff; padding: 12px 16px; }
+    .credits-year { width: 80px; font-weight: 600; color: #aaa; text-align: center; }
+    .known-for-card { width: 140px; min-width: 140px; }
+    .personal-info-block { font-size: 0.9rem; margin-bottom: 15px; }
+    .personal-info-label { font-weight: 600; margin-bottom: 3px; }
+  </style>
+</head>
+<body class="bg-dark-custom d-flex flex-column min-vh-100">
+
+<nav class="navbar navbar-expand-lg imdb-navbar sticky-top" id="mainNavbar">
+  <div class="container-fluid px-3 px-lg-4">
+    <a class="navbar-brand me-3" href="index.html"><span class="imdb-logo">IMDb</span></a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto align-items-lg-center gap-lg-1">
+        <li class="nav-item"><a class="nav-link nav-pill text-white" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link nav-pill text-white" href="movies.html">Movies</a></li>
+        <li class="nav-item"><a class="nav-link nav-pill text-white" href="tvshows.html">TV Shows</a></li>
+        <li class="nav-item"><a class="nav-link nav-pill text-white" href="celebrities.html">Celebrities</a></li>
+      </ul>
+      <div class="d-flex align-items-center gap-2">
+        <a href="watchlist.html" class="btn btn-outline-light btn-sm rounded-pill px-3">
+          <span class="d-none d-xl-inline">Watchlist</span>
+          <span class="badge bg-warning text-dark ms-1" id="navWatchlistCount" style="display: none;">0</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="flex-grow-1">
+  <div class="container-fluid px-3 px-lg-5 py-4" style="max-width: 1400px; margin: 0 auto;">
+    
+    <div id="loader" class="text-center py-5">
+      <div class="spinner-border text-warning" role="status"></div>
+    </div>
+
+    <div id="personContent" style="display: none;">
+      <div class="row">
+        <!-- Sidebar (Profile Pic & Info) -->
+        <div class="col-md-4 col-lg-3 mb-4">
+          <img id="personImage" src="" alt="Profile" class="img-fluid rounded mb-4" style="width: 100%; max-width: 300px; display: block; margin: 0 auto;">
+          
+          <h4 class="text-white mb-3">Personal Info</h4>
+          
+          <div class="personal-info-block text-white">
+            <div class="personal-info-label">Known For</div>
+            <div id="personKnownForDept" class="text-light"></div>
+          </div>
+          
+          <div class="personal-info-block text-white">
+            <div class="personal-info-label">Gender</div>
+            <div id="personGender" class="text-light"></div>
+          </div>
+          
+          <div class="personal-info-block text-white">
+            <div class="personal-info-label">Birthday</div>
+            <div id="personBirthday" class="text-light"></div>
+          </div>
+          
+          <div class="personal-info-block text-white">
+            <div class="personal-info-label">Place of Birth</div>
+            <div id="personBirthplace" class="text-light"></div>
+          </div>
+          
+          <div class="personal-info-block text-white">
+            <div class="personal-info-label">Also Known As</div>
+            <div id="personAlsoKnownAs" class="text-light" style="white-space: pre-line;"></div>
+          </div>
+        </div>
+
+        <!-- Main Content (Bio, Known For, Credits) -->
+        <div class="col-md-8 col-lg-9">
+          <h1 id="personName" class="text-white fw-bold mb-4" style="font-size: 2.5rem;"></h1>
+          
+          <h4 class="text-white mb-2">Biography</h4>
+          <p id="personBio" class="bio-text mb-5"></p>
+          
+          <h4 class="text-white mb-3">Known For</h4>
+          <div class="position-relative overflow-hidden mb-5">
+            <div id="knownForList" class="d-flex gap-3 pb-2" style="overflow-x: auto; scroll-snap-type: x mandatory;">
+              <!-- Cards loaded via JS -->
+            </div>
+          </div>
+          
+          <h4 class="text-white mb-3">Acting Credits</h4>
+          <div class="table-responsive bg-dark rounded shadow-sm">
+            <table class="table table-dark table-hover credits-table mb-0">
+              <tbody id="creditsList">
+                <!-- Credits loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script src="js/config.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/firebase-service.js"></script>
+<script src="js/data.js"></script>
+<script src="js/tmdb.js"></script>
+<script src="js/app.js"></script>
+<script src="js/person.js"></script>
+</body>
+</html>

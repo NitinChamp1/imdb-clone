@@ -25,3 +25,6 @@ error_log
 .vscode/
 .idea/
 *.suo
+
+.vercel
+.env*.local

@@ -180,8 +180,8 @@ document.addEventListener('DOMContentLoaded', async () => {
               ${generateMockReviews(item)}
             </div>
 
-            <!-- Write Review -->
-            <div class="review-card mt-4">
+            <!-- Write Review (hidden until a star is clicked) -->
+            <div class="review-card mt-4" id="writeReviewBox" style="display:none; overflow:hidden; transition: all 0.4s ease;">
               <h5 class="text-white mb-3"><i class="bi bi-pencil-square me-2 text-warning"></i>Write a Review</h5>
               <textarea class="form-control bg-transparent border-secondary text-white mb-3 custom-placeholder" id="reviewText" rows="3" placeholder="Share your thoughts about this movie..." style="resize:none;"></textarea>
               <div class="d-flex justify-content-between align-items-center">
@@ -282,6 +282,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     </footer>`;
   // Load real reviews from Firestore
   loadReviewsFromFirestore(id, type);
+
+  // If user already has a saved rating, show the review box immediately
+  if (userRating) {
+    const box = document.getElementById('writeReviewBox');
+    if (box) box.style.display = 'block';
+  }
 });
 
 async function loadReviewsFromFirestore(movieId, type) {
@@ -366,6 +372,18 @@ function rateMovie(id, val) {
   document.getElementById('userRatingText').textContent = `You rated: ${val}/10`;
   document.getElementById('reviewRatingDisplay').textContent = `${val}/10`;
   showToast(`<i class="bi bi-star-fill text-warning me-2"></i>Rated <strong>${val}/10</strong>!`);
+  // Reveal the write-review box with a smooth animation
+  const box = document.getElementById('writeReviewBox');
+  if (box && box.style.display === 'none') {
+    box.style.display = 'block';
+    box.style.opacity = '0';
+    box.style.transform = 'translateY(-10px)';
+    requestAnimationFrame(() => {
+      box.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      box.style.opacity = '1';
+      box.style.transform = 'translateY(0)';
+    });
+  }
 }
 function hoverStars(val) {
   document.querySelectorAll('.rate-star').forEach((s, i) => {
