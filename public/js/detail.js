@@ -378,8 +378,22 @@ function selectRating(id, val) {
   tempSelectedRating = val;
   updateStarsDisplay(val);
   document.getElementById('userRatingText').textContent = `Selected: ${val}/10`;
+  document.getElementById('reviewRatingDisplay').textContent = `${val}/10`;
   const submitBtn = document.getElementById('submitRatingBtn');
   if (submitBtn) submitBtn.style.display = 'block';
+
+  // Reveal the write-review box with a smooth animation
+  const box = document.getElementById('writeReviewBox');
+  if (box && box.style.display === 'none') {
+    box.style.display = 'block';
+    box.style.opacity = '0';
+    box.style.transform = 'translateY(-10px)';
+    requestAnimationFrame(() => {
+      box.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      box.style.opacity = '1';
+      box.style.transform = 'translateY(0)';
+    });
+  }
 }
 
 function submitRating(id) {
@@ -408,19 +422,6 @@ function submitRating(id) {
   if (submitBtn) submitBtn.style.display = 'none';
   
   showToast(`<i class="bi bi-star-fill text-warning me-2"></i>Rated <strong>${val}/10</strong>!`);
-  
-  // Reveal the write-review box with a smooth animation
-  const box = document.getElementById('writeReviewBox');
-  if (box && box.style.display === 'none') {
-    box.style.display = 'block';
-    box.style.opacity = '0';
-    box.style.transform = 'translateY(-10px)';
-    requestAnimationFrame(() => {
-      box.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-      box.style.opacity = '1';
-      box.style.transform = 'translateY(0)';
-    });
-  }
 }
 function hoverStars(val) {
   document.querySelectorAll('.rate-star').forEach((s, i) => {
