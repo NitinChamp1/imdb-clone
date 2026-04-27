@@ -103,9 +103,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="user-rate-stars" id="rateStars">
                   ${[1,2,3,4,5,6,7,8,9,10].map(n => `
                     <i class="bi bi-star${userRating >= n ? '-fill' : ''} rate-star ${userRating >= n ? 'active' : ''}" 
-                       data-val="${n}" onclick="rateMovie(${item.id}, ${n})"></i>`).join('')}
+                       data-val="${n}" onclick="selectRating(${item.id}, ${n})"></i>`).join('')}
                 </div>
                 <div class="rating-count mt-1" id="userRatingText" style="color: #bbb;">${userRating ? `You rated: ${userRating}/10` : 'Click to rate'}</div>
+                <button id="submitRatingBtn" class="btn btn-warning btn-sm mt-2 w-100 rounded-pill fw-600" style="display:none;" onclick="submitRating(${item.id})">
+                  <i class="bi bi-check-circle me-1"></i>Submit Rating
+                </button>
               </div>
               ${item.ranked ? `
               <div class="rating-box">
@@ -363,18 +366,48 @@ function generateMockReviews(item) {
 
 // User Rating
 const USER_RATINGS_KEY = 'imdb_clone_ratings';
+let tempSelectedRating = 0;
+
 function getUserRating(id) {
   try { return JSON.parse(localStorage.getItem(USER_RATINGS_KEY) || '{}')[id] || 0; }
   catch { return 0; }
 }
-function rateMovie(id, val) {
+
+function selectRating(id, val) {
+  tempSelectedRating = val;
+  updateStarsDisplay(val);
+  document.getElementById('userRatingText').textContent = `Selected: ${val}/10`;
+  const submitBtn = document.getElementById('submitRatingBtn');
+  if (submitBtn) submitBtn.style.display = 'block';
+}
+
+function submitRating(id) {
+  const user = (typeof auth !== 'undefined') ? auth.currentUser : null;
+  if (!user) {
+    const modal = new bootstrap.Modal(document.getElementById('authModal'));
+    modal.show();
+    return;
+  }
+
+  if (tempSelectedRating === 0) return;
+
+  const val = tempSelectedRating;
   const ratings = JSON.parse(localStorage.getItem(USER_RATINGS_KEY) || '{}');
   ratings[id] = val;
   localStorage.setItem(USER_RATINGS_KEY, JSON.stringify(ratings));
+  
+  // Once submitted, clear temp and display the permanent saved rating
+  tempSelectedRating = 0;
   updateStarsDisplay(val);
+  
   document.getElementById('userRatingText').textContent = `You rated: ${val}/10`;
   document.getElementById('reviewRatingDisplay').textContent = `${val}/10`;
+  
+  const submitBtn = document.getElementById('submitRatingBtn');
+  if (submitBtn) submitBtn.style.display = 'none';
+  
   showToast(`<i class="bi bi-star-fill text-warning me-2"></i>Rated <strong>${val}/10</strong>!`);
+  
   // Reveal the write-review box with a smooth animation
   const box = document.getElementById('writeReviewBox');
   if (box && box.style.display === 'none') {
@@ -398,7 +431,9 @@ function hoverStars(val) {
     s.classList.remove('active'); // clear active during hover preview
   });
 }
-function resetStars(id) { updateStarsDisplay(getUserRating(id)); }
+function resetStars(id) { 
+  updateStarsDisplay(tempSelectedRating || getUserRating(id)); 
+}
 function updateStarsDisplay(val) {
   document.querySelectorAll('.rate-star').forEach((s, i) => {
     const isLit = i < val;
