@@ -2,6 +2,26 @@
    app.js — Shared utilities for RNDb Clone
    ============================================================ */
 
+// ============================================================
+// SEARCH CATEGORY DROPDOWN LOGIC
+// ============================================================
+document.addEventListener('click', e => {
+  const item = e.target.closest('.category-item');
+  if (item) {
+    e.preventDefault();
+    const val = item.getAttribute('data-value');
+    const text = item.textContent;
+    const catInput = document.getElementById('searchCategory');
+    const catLabel = document.getElementById('searchCategoryLabel');
+    if (catInput) catInput.value = val;
+    if (catLabel) catLabel.textContent = text;
+  }
+});
+
+// ============================================================
+// UTILITIES
+// ============================================================
+
 // ---- Watchlist Management (localStorage) ----
 const WATCHLIST_KEY = 'rndb_clone_watchlist';
 

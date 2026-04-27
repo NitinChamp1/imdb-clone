@@ -66,12 +66,16 @@
       <!-- Search Bar -->
       <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0 flex-grow-1 mx-lg-3" style="max-width:480px;">
         <div class="input-group search-bar-group w-100">
-          <select class="form-select search-category-select" id="searchCategory" style="max-width:110px;">
-            <option value="all">All</option>
-            <option value="movies">Movies</option>
-            <option value="tv">TV Shows</option>
-            <option value="people">People</option>
-          </select>
+          <input type="hidden" id="searchCategory" value="all">
+          <button class="btn search-category-btn dropdown-toggle d-flex align-items-center justify-content-between" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="max-width:110px; background:#2a2a2a; border:1px solid #3a3a3a; color:#fff; border-radius: 4px 0 0 4px; padding-right: 12px;">
+            <span id="searchCategoryLabel" class="me-2">All</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item category-item" href="#" data-value="all">All</a></li>
+            <li><a class="dropdown-item category-item" href="#" data-value="movies">Movies</a></li>
+            <li><a class="dropdown-item category-item" href="#" data-value="tv">TV Shows</a></li>
+            <li><a class="dropdown-item category-item" href="#" data-value="people">People</a></li>
+          </ul>
           <input type="text" class="form-control search-input" id="globalSearch" placeholder="Search RNDb" autocomplete="off"/>
           <button class="btn btn-warning search-btn" type="button" onclick="performSearch()">
             <i class="bi bi-search"></i>
