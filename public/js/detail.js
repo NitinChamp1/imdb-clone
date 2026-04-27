@@ -30,17 +30,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const inWL = isInWatchlist(item.id);
   const genrePills = item.genre.map(g => `<span class="genre-pill me-2 mb-2">${g.charAt(0).toUpperCase() + g.slice(1)}</span>`).join('');
-  const castCards = (item.cast || []).map((name, i) => {
-    const avatarUrls = [
-      'https://i.pravatar.cc/100?img=' + (i + 10),
-      'https://i.pravatar.cc/100?img=' + (i + 15),
-      'https://i.pravatar.cc/100?img=' + (i + 20),
-    ];
+  const castCards = (item.castFull || []).map((c) => {
+    const imgUrl = c.profile_path 
+      ? `https://image.tmdb.org/t/p/w185${c.profile_path}` 
+      : `https://via.placeholder.com/80x80/222/888?text=${encodeURIComponent(c.name[0])}`;
     return `
       <div class="cast-card flex-shrink-0">
-        <img src="${avatarUrls[i % 3]}" class="cast-img" alt="${name}" onerror="this.src='https://via.placeholder.com/80x80/222/888?text=${encodeURIComponent(name[0])}'"/>
-        <div class="cast-name">${name}</div>
-        <div class="cast-role">Actor</div>
+        <img src="${imgUrl}" class="cast-img" alt="${c.name}" onerror="this.src='https://via.placeholder.com/80x80/222/888?text=${encodeURIComponent(c.name[0])}'"/>
+        <div class="cast-name">${c.name}</div>
+        <div class="cast-role">${c.character || 'Actor'}</div>
       </div>`;
   }).join('');
 
