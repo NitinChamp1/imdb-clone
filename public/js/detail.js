@@ -496,6 +496,11 @@ async function submitReview() {
   const movieId = params.get('id');
   const type = params.get('type') || 'movie';
 
+  // If there's a pending rating, submit it first
+  if (tempSelectedRating > 0) {
+    submitRating(movieId);
+  }
+
   const displayName = user.displayName || user.email || 'Anonymous';
   const rating = getUserRating(parseInt(movieId)) || null;
 
@@ -534,6 +539,13 @@ async function submitReview() {
     </div>`;
   container.insertAdjacentHTML('afterbegin', newReview);
   document.getElementById('reviewText').value = '';
+  
+  // Hide the review box after submission
+  const box = document.getElementById('writeReviewBox');
+  if (box) {
+    box.style.display = 'none';
+  }
+
   showToast('<i class="bi bi-check-circle-fill me-2 text-success"></i>Review submitted!');
 }
 

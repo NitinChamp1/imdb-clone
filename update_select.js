@@ -1,12 +1,5 @@
 const fs = require('fs');
 
-const oldHtml = `<select class="form-select search-category-select" id="searchCategory" style="max-width:110px;">
-            <option value="all">All</option>
-            <option value="movies">Movies</option>
-            <option value="tv">TV Shows</option>
-            <option value="people">People</option>
-          </select>`;
-
 const newHtml = `<input type="hidden" id="searchCategory" value="all">
           <button class="btn search-category-btn dropdown-toggle d-flex align-items-center justify-content-between" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="max-width:110px; background:#2a2a2a; border:1px solid #3a3a3a; color:#fff; border-radius: 4px 0 0 4px; padding-right: 12px;">
             <span id="searchCategoryLabel" class="me-2">All</span>
@@ -23,8 +16,9 @@ const files = fs.readdirSync('public').filter(f => f.endsWith('.html'));
 files.forEach(f => {
   const p = 'public/' + f;
   let content = fs.readFileSync(p, 'utf8');
-  if (content.includes('id="searchCategory"')) {
-    content = content.replace(oldHtml, newHtml);
+  const regex = /<select[\s\S]*?id="searchCategory"[\s\S]*?<\/select>/;
+  if (regex.test(content)) {
+    content = content.replace(regex, newHtml);
     fs.writeFileSync(p, content);
     console.log('Updated ' + f);
   }
