@@ -55,6 +55,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     similar.push(...staticSimilar);
   }
 
+  const wp = item.watchProviders;
+  let providersHtml = '';
+  if (wp && (wp.flatrate || wp.rent || wp.buy)) {
+    const renderList = (title, list) => {
+      if (!list || list.length === 0) return '';
+      return `
+        <div class="mb-3">
+          <div class="text-muted small mb-2">${title}</div>
+          <div class="d-flex flex-wrap gap-2">
+            ${list.map(p => `<img src="https://image.tmdb.org/t/p/w45${p.logo_path}" title="${p.provider_name}" alt="${p.provider_name}" class="rounded-2" style="width: 40px; height: 40px; object-fit: cover;" data-bs-toggle="tooltip"/>`).join('')}
+          </div>
+        </div>`;
+    };
+    providersHtml = `
+      <div class="p-4 rounded-3 mb-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+        <h5 class="text-warning mb-3"><i class="bi bi-play-btn-fill me-2"></i>Where to Watch</h5>
+        ${renderList('Stream', wp.flatrate)}
+        ${renderList('Rent', wp.rent)}
+        ${renderList('Buy', wp.buy)}
+        <div class="text-muted" style="font-size:0.65rem; margin-top:10px;">Powered by JustWatch</div>
+      </div>
+    `;
+  }
+
   document.getElementById('detailContent').innerHTML = `
     <!-- HERO -->
     <div class="detail-hero">
@@ -120,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <i class="bi bi-play-fill me-1"></i> ${item.trailer ? 'Watch Trailer' : 'No Trailer Avail'}
               </button>
               <button class="btn ${inWL ? 'btn-warning' : 'btn-outline-light'} rounded-pill px-4 fw-600" id="mainWLBtn" data-watchlist-id="${item.id}"
-                onclick="handleWatchlistToggle(${item.id}, '${item.title.replace(/'/g, "\\'")}', '${item.poster}', '${item.year}', ${item.rating})">
+                onclick="handleWatchlistToggle(${item.id}, '${item.title.replace(/'/g, "\\'")}', '${item.poster}', '${item.year}', ${item.rating}, '${type}')">
                 <i class="bi ${inWL ? 'bi-bookmark-fill' : 'bi-bookmark-plus'} me-1"></i> ${inWL ? 'In Watchlist' : 'Add to Watchlist'}
               </button>
               <button class="btn btn-outline-secondary rounded-pill px-3" onclick="shareMovie('${item.title}')">
@@ -231,6 +255,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
               </div>
 
+              ${providersHtml}
+
               <!-- More Details -->
               <div class="p-4 rounded-3" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
                 <h5 class="text-warning mb-3">More Info</h5>
@@ -261,7 +287,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="movie-poster-wrap">
                   <img class="movie-poster" src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/1e1e1e/888?text=?'"/>
                   <button class="movie-watchlist-btn ${isInWatchlist(m.id) ? 'in-watchlist' : ''}" data-watchlist-id="${m.id}"
-                    onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${m.year}, ${m.rating})">
+                    onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${m.year}, ${m.rating}, '${m.type}')">
                     <i class="bi ${isInWatchlist(m.id) ? 'bi-bookmark-fill' : 'bi-bookmark-plus'}"></i>
                   </button>
                 </div>
@@ -465,8 +491,8 @@ function initStarHover(movieId) {
   });
 }
 
-function handleWatchlistToggle(id, title, poster, year, rating) {
-  const added = toggleWatchlist(id, title, poster, year, rating);
+function handleWatchlistToggle(id, title, poster, year, rating, type = 'movie') {
+  const added = toggleWatchlist(id, title, poster, year, rating, type);
   const btn = document.getElementById('mainWLBtn');
   if (btn) {
     if (added) {

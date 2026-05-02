@@ -65,7 +65,7 @@ function makeCleanCard(m) {
       <div class="poster-wrapper">
         <img src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/150x225/1e1e1e/888?text=?'"/>
         <button class="card-options ${isInWatchlist(m.id) ? 'text-warning' : ''}" data-watchlist-id="${m.id}" 
-          onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', '${m.year}', ${m.rating})">
+          onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', '${m.year}', ${m.rating}, '${m.type}')">
           <i class="bi ${isInWatchlist(m.id) ? 'bi-check-circle-fill' : 'bi-three-dots'}"></i>
         </button>
       </div>
@@ -156,7 +156,7 @@ function initHeroCarousel(liveData) {
                 <button class="btn-hero-primary" onclick="goToDetail(${m.id}, '${m.type}')">
                   <i class="bi bi-play-fill me-2"></i>More Info
                 </button>
-                <button class="btn-hero-secondary" onclick="toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${m.year}, ${m.rating})" data-watchlist-id="${m.id}" id="heroWL${m.id}">
+                <button class="btn-hero-secondary" onclick="toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${m.year}, ${m.rating}, '${m.type}')" data-watchlist-id="${m.id}" id="heroWL${m.id}">
                   <i class="bi ${isInWatchlist(m.id) ? 'bi-bookmark-fill text-warning' : 'bi-bookmark-plus'}"></i>
                   ${isInWatchlist(m.id) ? 'In Watchlist' : 'Add to Watchlist'}
                 </button>
@@ -221,7 +221,7 @@ function initFeaturedSection(filter, liveData) {
             <div class="movie-rank">#${m.ranked}</div>
             <button class="movie-watchlist-btn ${isInWatchlist(m.id) ? 'in-watchlist' : ''}" 
               data-watchlist-id="${m.id}"
-              onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${m.year}, ${m.rating})">
+              onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${m.year}, ${m.rating}, '${m.type}')">
               <i class="bi ${isInWatchlist(m.id) ? 'bi-bookmark-fill' : 'bi-bookmark-plus'}"></i>
             </button>
             <div class="movie-overlay">
@@ -320,7 +320,7 @@ function initFanFavorites(liveData) {
           <div class="fan-fav-year">${m.year} • ${m.runtime}</div>
           <div class="fan-fav-genre">${m.genre.map(g => g.charAt(0).toUpperCase() + g.slice(1)).join(', ')}</div>
           <button class="watchlist-btn-sm ${isInWatchlist(m.id) ? 'in-watchlist' : ''}" data-watchlist-id="${m.id}"
-            onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${m.year}, ${m.rating})">
+            onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${m.year}, ${m.rating}, '${m.type}')">
             <i class="bi ${isInWatchlist(m.id) ? 'bi-bookmark-fill' : 'bi-bookmark-plus'}"></i>
             ${isInWatchlist(m.id) ? 'In Watchlist' : 'Add'}
           </button>
@@ -359,7 +359,7 @@ function makeScrollCard(m) {
       <div style="position:relative;overflow:hidden;">
         <img class="scroll-card-img" src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/160x240/1e1e1e/888?text=?'"/>
         <button class="scroll-card-watchlist ${isInWatchlist(m.id) ? 'in-watchlist' : ''}" data-watchlist-id="${m.id}"
-          onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${year}, ${m.rating})">
+          onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${year}, ${m.rating}, '${m.type}')">
           <i class="bi ${isInWatchlist(m.id) ? 'bi-bookmark-fill' : 'bi-bookmark-plus'}"></i>
         </button>
         ${m.trending ? '<span class="live-badge position-absolute top-0 start-0 m-1"><span class="live-dot"></span>Trending</span>' : ''}

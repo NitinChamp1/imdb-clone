@@ -34,7 +34,7 @@ function saveWatchlist(list) {
   localStorage.setItem(WATCHLIST_KEY, JSON.stringify(list));
 }
 
-function toggleWatchlist(id, title, poster, year, rating) {
+function toggleWatchlist(id, title, poster, year, rating, type = 'movie') {
   const list = getWatchlist();
   const idx = list.findIndex(w => w.id === id);
   let added = false;
@@ -385,6 +385,7 @@ function ensureAuthUI() {
             <span id="navUserName">User</span>
           </button>
           <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+             <li><a class="dropdown-item" href="profile.html"><i class="bi bi-person me-2"></i>My Profile</a></li>
              <li><a class="dropdown-item" href="watchlist.html"><i class="bi bi-bookmark me-2"></i>My Watchlist</a></li>
              <li><hr class="dropdown-divider"></li>
              <li><a class="dropdown-item text-danger" href="#" onclick="handleLogout()"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>

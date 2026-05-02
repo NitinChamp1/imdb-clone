@@ -75,11 +75,11 @@ const TMDB = {
 
   // Detail
   async getMovieDetail(id) {
-    return tmdbFetch(`/movie/${id}`, { append_to_response: 'credits,videos,similar,images' });
+    return tmdbFetch(`/movie/${id}`, { append_to_response: 'credits,videos,similar,images,watch/providers' });
   },
 
   async getTVDetail(id) {
-    return tmdbFetch(`/tv/${id}`, { append_to_response: 'credits,videos,similar' });
+    return tmdbFetch(`/tv/${id}`, { append_to_response: 'credits,videos,similar,watch/providers' });
   },
 
   async getMovieCredits(id) {
@@ -303,6 +303,7 @@ async function loadDetailFromTMDb(id, type) {
       type: 'tv',
       trailer: getTrailerKey(data.videos?.results),
       similar: (data.similar?.results || []).slice(0, 8).map(m => normalizeTMDb(m, 'tv')),
+      watchProviders: data['watch/providers']?.results?.US || null,
     };
   } else {
     const data = await TMDB.getMovieDetail(id);
@@ -326,6 +327,7 @@ async function loadDetailFromTMDb(id, type) {
       ranked: null,
       trailer: getTrailerKey(data.videos?.results),
       similar: (data.similar?.results || []).slice(0, 8).map(m => normalizeTMDb(m, 'movie')),
+      watchProviders: data['watch/providers']?.results?.US || null,
     };
   }
 }
