@@ -119,7 +119,7 @@ function renderSortedList(list, sort) {
             <button class="btn btn-sm btn-warning rounded-pill px-3 fw-600" onclick="goToDetail(${item.id}, '${itemType}')">
               <i class="bi bi-info-circle me-1"></i>Details
             </button>
-            <button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="removeFromWatchlist(${item.id}, '${item.title.replace(/'/g, "\\'")}')">
+            <button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="removeFromWatchlist(${item.id}, '${item.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')">
               <i class="bi bi-bookmark-x me-1"></i>Remove
             </button>
             <button class="btn btn-sm btn-outline-secondary rounded-pill px-3">

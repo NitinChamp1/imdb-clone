@@ -71,7 +71,11 @@ async function applyFilters(page = 1) {
   totalPages = Math.min(data.total_pages, 500); // TMDB limits to 500 pages
   document.getElementById('resultsCount').textContent = `Found ${data.total_results.toLocaleString()} results (showing page ${currentPage} of ${totalPages})`;
   
-  renderResults(data.results.map(item => normalizeTMDb(item, type)));
+  console.log("Raw API Item 0:", data.results[0]);
+  const normalized = data.results.map(item => normalizeTMDb(item, type));
+  console.log("Normalized Item 0:", normalized[0]);
+  
+  renderResults(normalized);
   renderPagination();
 }
 
@@ -87,7 +91,7 @@ function renderResults(items) {
           <div class="movie-poster-wrap">
             <img class="movie-poster" src="${item.poster}" alt="${item.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/1e1e1e/888?text=?'"/>
             <button class="movie-watchlist-btn ${inWL ? 'in-watchlist' : ''}" data-watchlist-id="${item.id}"
-              onclick="event.stopPropagation(); toggleWatchlist(${item.id}, '${item.title.replace(/'/g, "\\'")}', '${item.poster}', ${item.year}, ${item.rating}, '${item.type}')">
+              onclick="event.stopPropagation(); toggleWatchlist(${item.id}, '${item.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${item.poster}', '${item.year}', ${item.rating}, '${item.type}')">
               <i class="bi ${inWL ? 'bi-bookmark-fill' : 'bi-bookmark-plus'}"></i>
             </button>
           </div>
@@ -95,7 +99,7 @@ function renderResults(items) {
             <div class="movie-title">${item.title}</div>
             <div class="d-flex justify-content-between align-items-center">
               <div class="movie-rating"><i class="bi bi-star-fill rating-star"></i>${item.rating}</div>
-              <div class="text-muted" style="font-size: 0.75rem;">${item.year || ''}</div>
+              <div class="text-muted" style="font-size: 0.75rem;">${item.year && !isNaN(item.year) ? item.year : ''}</div>
             </div>
           </div>
         </div>

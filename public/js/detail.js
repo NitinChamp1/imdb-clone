@@ -140,11 +140,11 @@ document.addEventListener('DOMContentLoaded', async () => {
               </div>` : ''}
             </div>
             <div class="d-flex gap-2 flex-wrap">
-              <button class="btn btn-warning rounded-pill px-4 fw-700" ${item.trailer ? `onclick="openTrailerModal('${item.trailer}', '${item.title.replace(/'/g, "\\'")}')"` : 'disabled'}>
+              <button class="btn btn-warning rounded-pill px-4 fw-700" ${item.trailer ? `onclick="openTrailerModal('${item.trailer}', '${item.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')"` : 'disabled'}>
                 <i class="bi bi-play-fill me-1"></i> ${item.trailer ? 'Watch Trailer' : 'No Trailer Avail'}
               </button>
               <button class="btn ${inWL ? 'btn-warning' : 'btn-outline-light'} rounded-pill px-4 fw-600" id="mainWLBtn" data-watchlist-id="${item.id}"
-                onclick="handleWatchlistToggle(${item.id}, '${item.title.replace(/'/g, "\\'")}', '${item.poster}', '${item.year}', ${item.rating}, '${type}')">
+                onclick="handleWatchlistToggle(${item.id}, '${item.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${item.poster}', '${item.year}', ${item.rating}, '${type}')">
                 <i class="bi ${inWL ? 'bi-bookmark-fill' : 'bi-bookmark-plus'} me-1"></i> ${inWL ? 'In Watchlist' : 'Add to Watchlist'}
               </button>
               <button class="btn btn-outline-secondary rounded-pill px-3" onclick="shareMovie('${item.title}')">
@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="movie-poster-wrap">
                   <img class="movie-poster" src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/1e1e1e/888?text=?'"/>
                   <button class="movie-watchlist-btn ${isInWatchlist(m.id) ? 'in-watchlist' : ''}" data-watchlist-id="${m.id}"
-                    onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${m.year}, ${m.rating}, '${m.type}')">
+                    onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${m.poster}', '${m.year}', ${m.rating}, '${m.type}')">
                     <i class="bi ${isInWatchlist(m.id) ? 'bi-bookmark-fill' : 'bi-bookmark-plus'}"></i>
                   </button>
                 </div>

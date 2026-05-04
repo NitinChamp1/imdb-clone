@@ -98,7 +98,7 @@ function initFeaturedTV() {
         </div>
         <button class="position-absolute top-0 end-0 m-2 scroll-card-watchlist ${isInWatchlist(show.id) ? 'in-watchlist' : ''}" 
           data-watchlist-id="${show.id}" style="opacity:1;"
-          onclick="event.stopPropagation(); toggleWatchlist(${show.id}, '${show.title.replace(/'/g, "\\'")}', '${show.poster}', '${show.year}', ${show.rating}, 'tv')">
+          onclick="event.stopPropagation(); toggleWatchlist(${show.id}, '${show.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${show.poster}', '${show.year}', ${show.rating}, 'tv')">
           <i class="bi ${isInWatchlist(show.id) ? 'bi-bookmark-fill' : 'bi-bookmark-plus'}"></i>
         </button>
       </div>
@@ -134,7 +134,7 @@ function renderAllTV(filter) {
             </div>
             <button class="scroll-card-watchlist ${isInWatchlist(show.id) ? 'in-watchlist' : ''}" data-watchlist-id="${show.id}"
               style="position:absolute;top:8px;right:8px;opacity:0;transition:opacity 0.2s;"
-              onclick="event.stopPropagation(); toggleWatchlist(${show.id}, '${show.title.replace(/'/g, "\\'")}', '${show.poster}', '${show.year}', ${show.rating}, 'tv')">
+              onclick="event.stopPropagation(); toggleWatchlist(${show.id}, '${show.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${show.poster}', '${show.year}', ${show.rating}, 'tv')">
               <i class="bi ${isInWatchlist(show.id) ? 'bi-bookmark-fill' : 'bi-bookmark-plus'}"></i>
             </button>
             <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top, rgba(0,0,0,0.85),transparent);padding:20px 10px 10px;">
@@ -186,7 +186,7 @@ function renderTop5TV() {
           </div>
         </div>
         <button class="btn btn-sm ${isInWatchlist(show.id) ? 'btn-warning text-dark' : 'btn-outline-warning'} rounded-pill px-3 flex-shrink-0" data-watchlist-id="${show.id}"
-          onclick="event.stopPropagation(); toggleWatchlist(${show.id}, '${show.title.replace(/'/g, "\\'")}', '${show.poster}', '${show.year}', ${show.rating}, 'tv')">
+          onclick="event.stopPropagation(); toggleWatchlist(${show.id}, '${show.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${show.poster}', '${show.year}', ${show.rating}, 'tv')">
           <i class="bi ${isInWatchlist(show.id) ? 'bi-bookmark-fill' : 'bi-bookmark-plus'} me-1"></i>
           ${isInWatchlist(show.id) ? 'Saved' : 'Add'}
         </button>

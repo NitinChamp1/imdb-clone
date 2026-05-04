@@ -135,7 +135,7 @@ function renderMovies() {
             <img class="movie-poster" src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/1e1e1e/888?text=${encodeURIComponent(m.title)}'"/>
             <div class="movie-rank">#${m.ranked}</div>
             <button class="movie-watchlist-btn ${isInWatchlist(m.id) ? 'in-watchlist' : ''}" data-watchlist-id="${m.id}"
-              onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${m.year}, ${m.rating}, 'movie')">
+              onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${m.poster}', ${m.year}, ${m.rating}, 'movie')">
               <i class="bi ${isInWatchlist(m.id) ? 'bi-bookmark-fill' : 'bi-bookmark-plus'}"></i>
             </button>
             <div class="movie-overlay">
@@ -172,7 +172,7 @@ function renderMovies() {
                 <h5 class="watchlist-title d-inline">${m.title}</h5>
               </div>
               <button class="btn btn-sm ${isInWatchlist(m.id) ? 'btn-warning' : 'btn-outline-warning'} rounded-pill px-3 ms-2 flex-shrink-0" data-watchlist-id="${m.id}"
-                onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'")}', '${m.poster}', ${m.year}, ${m.rating}, 'movie')">
+                onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${m.poster}', ${m.year}, ${m.rating}, 'movie')">
                 <i class="bi ${isInWatchlist(m.id) ? 'bi-bookmark-fill' : 'bi-bookmark-plus'} me-1"></i>
                 ${isInWatchlist(m.id) ? 'Saved' : 'Watchlist'}
               </button>
