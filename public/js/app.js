@@ -38,7 +38,7 @@ function toggleWatchlist(id, title, poster, year, rating, type = 'movie') {
   const list = getWatchlist();
   const idx = list.findIndex(w => w.id === id);
   let added = false;
-  const item = { id, title, poster, year, rating, addedAt: Date.now() };
+  const item = { id, title, poster, year, rating, type, addedAt: Date.now() };
 
   if (idx === -1) {
     list.push(item);

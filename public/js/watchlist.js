@@ -144,6 +144,13 @@ function removeFromWatchlist(id, title) {
   if (idx !== -1) {
     list.splice(idx, 1);
     saveWatchlist(list);
+    
+    // Sync with Firebase
+    const user = (typeof auth !== 'undefined') ? auth.currentUser : null;
+    if (user && typeof removeFromCloudWatchlist === 'function') {
+      removeFromCloudWatchlist(user.uid, id);
+    }
+
     // Animate out
     const el = document.getElementById(`wl-item-${id}`);
     if (el) {
@@ -158,10 +165,20 @@ function removeFromWatchlist(id, title) {
   }
 }
 
-function clearAllWatchlist() {
+async function clearAllWatchlist() {
   if (!confirm('Are you sure you want to clear your entire watchlist?')) return;
+  
+  const list = getWatchlist();
   saveWatchlist([]);
   updateWatchlistCount();
   renderWatchlistPage();
   showToast('<i class="bi bi-trash me-2 text-warning"></i>Watchlist cleared.');
+  
+  // Sync with Firebase
+  const user = (typeof auth !== 'undefined') ? auth.currentUser : null;
+  if (user && typeof removeFromCloudWatchlist === 'function') {
+    for (const item of list) {
+      await removeFromCloudWatchlist(user.uid, item.id);
+    }
+  }
 }
