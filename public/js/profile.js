@@ -105,16 +105,24 @@ async function loadUserReviews(uid) {
 
   } catch (err) {
     console.error("Error loading reviews:", err);
-    if (err.message.includes("requires an index")) {
+    if (err.code === 'failed-precondition' || err.message.includes("requires an index")) {
       container.innerHTML = `
         <div class="alert alert-warning">
           <strong>Database Index Required!</strong><br>
           To show all your reviews, Firebase needs a specific index. 
-          Check the console for the index creation link, click it, and wait a few minutes.
+          Check the browser console (Right Click -> Inspect -> Console) for a blue link, click it, and wait 3-5 minutes.
+        </div>
+      `;
+    } else if (err.code === 'permission-denied' || err.message.includes("permissions")) {
+      container.innerHTML = `
+        <div class="alert alert-danger">
+          <strong>Permission Denied!</strong><br>
+          Your Firebase rules are blocking this query. Go to Firebase Console -> Firestore -> Rules, and add:<br>
+          <code class="d-block mt-2 bg-dark p-2 rounded">match /{path=**}/userReviews/{reviewId} { allow read: if true; }</code>
         </div>
       `;
     } else {
-      container.innerHTML = `<div class="text-danger py-4">Failed to load reviews. Please try again later.</div>`;
+      container.innerHTML = `<div class="text-danger py-4">Failed to load reviews. Please try again later.<br><small class="text-muted">Error details: ${err.message}</small></div>`;
     }
   }
 }
