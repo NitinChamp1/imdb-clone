@@ -76,3 +76,97 @@ async function removeFromCloudWatchlist(userId, itemId) {
     return false;
   }
 }
+
+/**
+ * Creates a new custom movie list for the user.
+ */
+async function createCustomList(userId, listName, description = '') {
+  try {
+    const listRef = await db.collection('users').doc(userId).collection('customLists').add({
+      name: listName,
+      description: description,
+      movies: [], // Array of movie objects
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    return listRef.id;
+  } catch (err) {
+    console.error("Error creating custom list:", err);
+    return null;
+  }
+}
+
+/**
+ * Fetches all custom lists for the user.
+ */
+async function fetchCustomLists(userId) {
+  try {
+    const snapshot = await db.collection('users').doc(userId).collection('customLists').orderBy('createdAt', 'desc').get();
+    const lists = [];
+    snapshot.forEach(doc => {
+      lists.push({ id: doc.id, ...doc.data() });
+    });
+    return lists;
+  } catch (err) {
+    console.error("Error fetching custom lists:", err);
+    return [];
+  }
+}
+
+/**
+ * Adds a movie to a specific custom list.
+ */
+async function addMovieToCustomList(userId, listId, movieItem) {
+  try {
+    const listRef = db.collection('users').doc(userId).collection('customLists').doc(listId);
+    // Remove if already exists to prevent duplicates, then add
+    const doc = await listRef.get();
+    if (doc.exists) {
+      let movies = doc.data().movies || [];
+      // If it's already in there, maybe we just return
+      if (movies.some(m => m.id === movieItem.id)) {
+        return true; // already added
+      }
+      movies.push({
+        ...movieItem,
+        addedAt: Date.now()
+      });
+      await listRef.update({ movies });
+    }
+    return true;
+  } catch (err) {
+    console.error("Error adding movie to list:", err);
+    return false;
+  }
+}
+
+/**
+ * Removes a movie from a specific custom list.
+ */
+async function removeMovieFromCustomList(userId, listId, movieId) {
+  try {
+    const listRef = db.collection('users').doc(userId).collection('customLists').doc(listId);
+    const doc = await listRef.get();
+    if (doc.exists) {
+      let movies = doc.data().movies || [];
+      movies = movies.filter(m => m.id !== movieId);
+      await listRef.update({ movies });
+    }
+    return true;
+  } catch (err) {
+    console.error("Error removing movie from list:", err);
+    return false;
+  }
+}
+
+/**
+ * Deletes a custom list entirely.
+ */
+async function deleteCustomList(userId, listId) {
+  try {
+    await db.collection('users').doc(userId).collection('customLists').doc(listId).delete();
+    return true;
+  } catch (err) {
+    console.error("Error deleting custom list:", err);
+    return false;
+  }
+}

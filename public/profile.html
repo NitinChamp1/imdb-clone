@@ -111,8 +111,25 @@
         </div>
       </div>
 
-      <!-- Main Column: Reviews -->
+      <!-- Main Column: Reviews & Lists -->
       <div class="col-lg-8">
+        
+        <!-- My Lists Section -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="section-title mb-0">My Custom Lists</h3>
+          <button class="btn btn-warning rounded-pill px-3 fw-600 btn-sm" onclick="openCreateListModal()">
+            <i class="bi bi-plus-lg me-1"></i>Create List
+          </button>
+        </div>
+        
+        <div class="row g-3 mb-5" id="userListsContainer">
+          <div class="col-12 text-center py-4">
+            <div class="spinner-border text-warning" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+
         <h3 class="section-title mb-4">Your Reviews</h3>
         <div id="userReviewsContainer">
           <div class="text-center py-5">
@@ -120,6 +137,52 @@
               <span class="visually-hidden">Loading...</span>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create List Modal -->
+<div class="modal fade" id="createListModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white border-secondary">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold">Create New List</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4 pt-3">
+        <div class="mb-3">
+          <label class="form-label small text-light">List Name</label>
+          <input type="text" class="form-control bg-dark text-white border-secondary" id="newListName" placeholder="e.g., Weekend Binge">
+        </div>
+        <div class="mb-4">
+          <label class="form-label small text-light">Description (optional)</label>
+          <textarea class="form-control bg-dark text-white border-secondary" id="newListDesc" rows="2" placeholder="What's this list about?"></textarea>
+        </div>
+        <button class="btn btn-warning w-100 rounded-pill fw-600" onclick="handleCreateList()">Create List</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom List Details Modal (View/Edit list) -->
+<div class="modal fade" id="viewListModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-dark text-white border-secondary" style="min-height: 500px;">
+      <div class="modal-header border-0 pb-0 align-items-start">
+        <div>
+          <h4 class="modal-title fw-bold text-warning mb-1" id="viewListTitle">List Title</h4>
+          <p class="text-muted small mb-0" id="viewListDesc">List Description</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-danger btn-sm rounded-pill" onclick="handleDeleteList()"><i class="bi bi-trash"></i></button>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+      </div>
+      <div class="modal-body px-4 py-4">
+        <div class="row g-3" id="viewListItemsContainer">
+          <!-- Movies will be injected here -->
         </div>
       </div>
     </div>

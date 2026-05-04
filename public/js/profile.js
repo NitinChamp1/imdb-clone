@@ -36,6 +36,9 @@ async function loadUserProfile(user) {
   // we would ideally need a collectionGroup query in Firestore.
   // We'll set it up here!
   await loadUserReviews(user.uid);
+  
+  // Load Custom Lists
+  await loadUserLists(user.uid);
 }
 
 async function loadUserReviews(uid) {
@@ -140,4 +143,160 @@ async function uploadAvatar(e) {
     }
   };
   reader.readAsDataURL(file);
+}
+
+// ============================================================
+// CUSTOM LISTS LOGIC
+// ============================================================
+let currentLists = [];
+let currentViewListId = null;
+
+async function loadUserLists(uid) {
+  const container = document.getElementById('userListsContainer');
+  const lists = await fetchCustomLists(uid);
+  currentLists = lists;
+  
+  if (lists.length === 0) {
+    container.innerHTML = `
+      <div class="col-12 text-center py-5" style="background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.2);border-radius:12px;">
+        <i class="bi bi-collection-play text-muted" style="font-size: 3rem;"></i>
+        <h5 class="text-white mt-3">No Custom Lists</h5>
+        <p class="text-muted">Create a list to organize your favorite movies and shows!</p>
+        <button class="btn btn-outline-warning rounded-pill px-4 mt-2" onclick="openCreateListModal()">Create First List</button>
+      </div>
+    `;
+    return;
+  }
+  
+  let html = '';
+  lists.forEach(list => {
+    const itemCount = (list.movies || []).length;
+    const coverPoster = itemCount > 0 && list.movies[0].poster ? list.movies[0].poster : 'https://via.placeholder.com/200x300/1e1e1e/888?text=No+Items';
+    
+    html += `
+      <div class="col-sm-6 col-md-4">
+        <div class="list-card position-relative overflow-hidden rounded-3" style="cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:#1e1e1e;" onclick="openViewListModal('${list.id}')">
+          <div class="list-cover" style="height:140px; background:url('${coverPoster}') center/cover;">
+            <div class="w-100 h-100" style="background:linear-gradient(to top, rgba(0,0,0,0.9), transparent);"></div>
+          </div>
+          <div class="p-3 position-absolute bottom-0 w-100">
+            <h5 class="text-white fw-bold mb-1 text-truncate">${list.name}</h5>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted small">${itemCount} items</span>
+              <i class="bi bi-arrow-right-circle text-warning fs-5"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+function openCreateListModal() {
+  const modal = new bootstrap.Modal(document.getElementById('createListModal'));
+  document.getElementById('newListName').value = '';
+  document.getElementById('newListDesc').value = '';
+  modal.show();
+}
+
+async function handleCreateList() {
+  const name = document.getElementById('newListName').value.trim();
+  const desc = document.getElementById('newListDesc').value.trim();
+  if (!name) {
+    showToast('<i class="bi bi-x-circle me-2 text-danger"></i>List name is required', 'danger');
+    return;
+  }
+  
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  showToast('<i class="bi bi-hourglass-split me-2 text-warning"></i>Creating list...');
+  const id = await createCustomList(user.uid, name, desc);
+  
+  if (id) {
+    bootstrap.Modal.getInstance(document.getElementById('createListModal')).hide();
+    showToast('<i class="bi bi-check-circle-fill me-2 text-success"></i>List created successfully!');
+    loadUserLists(user.uid);
+  } else {
+    showToast('<i class="bi bi-x-circle me-2 text-danger"></i>Failed to create list', 'danger');
+  }
+}
+
+function openViewListModal(listId) {
+  const list = currentLists.find(l => l.id === listId);
+  if (!list) return;
+  
+  currentViewListId = listId;
+  document.getElementById('viewListTitle').textContent = list.name;
+  document.getElementById('viewListDesc').textContent = list.description || 'No description';
+  
+  const container = document.getElementById('viewListItemsContainer');
+  const movies = list.movies || [];
+  
+  if (movies.length === 0) {
+    container.innerHTML = `
+      <div class="col-12 text-center py-5">
+        <p class="text-muted mb-0">This list is empty.</p>
+      </div>
+    `;
+  } else {
+    container.innerHTML = movies.map(m => `
+      <div class="col-6 col-sm-4 col-md-3 mb-3">
+        <div class="movie-card position-relative">
+          <div class="movie-poster-wrap">
+            <img class="movie-poster" src="${m.poster}" alt="${m.title}" onclick="goToDetail(${m.id}, '${m.type}')" style="cursor:pointer;"/>
+            <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle" style="width:30px;height:30px;padding:0;z-index:3;" onclick="handleRemoveFromList('${m.id}')">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+          <div class="movie-info p-2" style="background:#111;">
+            <div class="movie-title small text-truncate" style="font-size:0.8rem;">${m.title}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  const modal = new bootstrap.Modal(document.getElementById('viewListModal'));
+  modal.show();
+}
+
+async function handleRemoveFromList(movieId) {
+  if (!currentViewListId) return;
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  if (confirm("Remove this movie from the list?")) {
+    const success = await removeMovieFromCustomList(user.uid, currentViewListId, movieId);
+    if (success) {
+      showToast('<i class="bi bi-check-circle-fill me-2 text-success"></i>Movie removed from list');
+      // Refresh
+      await loadUserLists(user.uid);
+      // Re-open modal with updated data
+      const modal = bootstrap.Modal.getInstance(document.getElementById('viewListModal'));
+      if (modal) modal.hide();
+      openViewListModal(currentViewListId);
+    } else {
+      showToast('<i class="bi bi-x-circle me-2 text-danger"></i>Failed to remove movie', 'danger');
+    }
+  }
+}
+
+async function handleDeleteList() {
+  if (!currentViewListId) return;
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  if (confirm("Are you sure you want to delete this list entirely? This cannot be undone.")) {
+    const success = await deleteCustomList(user.uid, currentViewListId);
+    if (success) {
+      bootstrap.Modal.getInstance(document.getElementById('viewListModal')).hide();
+      showToast('<i class="bi bi-check-circle-fill me-2 text-success"></i>List deleted');
+      loadUserLists(user.uid);
+    } else {
+      showToast('<i class="bi bi-x-circle me-2 text-danger"></i>Failed to delete list', 'danger');
+    }
+  }
 }

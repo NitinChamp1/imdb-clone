@@ -147,6 +147,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 onclick="handleWatchlistToggle(${item.id}, '${item.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${item.poster}', '${item.year}', ${item.rating}, '${type}')">
                 <i class="bi ${inWL ? 'bi-bookmark-fill' : 'bi-bookmark-plus'} me-1"></i> ${inWL ? 'In Watchlist' : 'Add to Watchlist'}
               </button>
+              <button class="btn btn-outline-info rounded-pill px-3 fw-600" onclick="openAddToListModal(${item.id}, '${item.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${item.poster}', '${item.year}', ${item.rating}, '${type}')">
+                <i class="bi bi-collection-play me-1"></i> Add to List
+              </button>
               <button class="btn btn-outline-secondary rounded-pill px-3" onclick="shareMovie('${item.title}')">
                 <i class="bi bi-share me-1"></i> Share
               </button>
@@ -703,4 +706,119 @@ async function handleEmailSignUp() {
     errEl.textContent = err.message || 'Sign-up failed. Try again.';
     errEl.style.display = 'block';
   }
+}
+
+// ============================================================
+// CUSTOM LISTS MODAL LOGIC
+// ============================================================
+let currentAddToListMovie = null;
+
+async function openAddToListModal(id, title, poster, year, rating, type) {
+  const user = (typeof auth !== 'undefined') ? auth.currentUser : null;
+  if (!user) {
+    const modal = new bootstrap.Modal(document.getElementById('authModal'));
+    modal.show();
+    return;
+  }
+  
+  currentAddToListMovie = { id, title, poster, year, rating, type };
+  document.getElementById('addToListMovieName').textContent = title;
+  
+  const modal = new bootstrap.Modal(document.getElementById('addToListModal'));
+  modal.show();
+  
+  await refreshCustomListsInModal(user.uid);
+}
+
+async function refreshCustomListsInModal(uid) {
+  const container = document.getElementById('customListsSelectionContainer');
+  container.innerHTML = `
+    <div class="text-center py-3">
+      <div class="spinner-border text-warning spinner-border-sm" role="status"></div>
+      <span class="ms-2 small text-muted">Loading your lists...</span>
+    </div>
+  `;
+  
+  const lists = await fetchCustomLists(uid);
+  
+  if (lists.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-3">
+        <p class="text-muted small mb-0">You don't have any custom lists yet.</p>
+      </div>
+    `;
+    return;
+  }
+  
+  let html = '';
+  lists.forEach(list => {
+    // Check if this movie is already in this list
+    const isAlreadyInList = (list.movies || []).some(m => String(m.id) === String(currentAddToListMovie.id));
+    
+    html += `
+      <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">
+        <div>
+          <div class="fw-600 text-white" style="font-size:0.9rem;">${list.name}</div>
+          <div class="text-muted" style="font-size:0.75rem;">${(list.movies || []).length} items</div>
+        </div>
+        <button class="btn btn-sm ${isAlreadyInList ? 'btn-secondary disabled' : 'btn-outline-warning'} rounded-pill" style="font-size:0.75rem;" 
+                onclick="handleSaveToList('${list.id}', this)" ${isAlreadyInList ? 'disabled' : ''}>
+          ${isAlreadyInList ? '<i class="bi bi-check2"></i> Added' : 'Add'}
+        </button>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+async function handleSaveToList(listId, btnElement) {
+  if (!currentAddToListMovie) return;
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  btnElement.disabled = true;
+  btnElement.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+  
+  const success = await addMovieToCustomList(user.uid, listId, currentAddToListMovie);
+  
+  if (success) {
+    btnElement.className = 'btn btn-sm btn-success rounded-pill';
+    btnElement.innerHTML = '<i class="bi bi-check2"></i> Added';
+    showToast('<i class="bi bi-check-circle-fill me-2 text-success"></i>Added to list!');
+  } else {
+    btnElement.disabled = false;
+    btnElement.className = 'btn btn-sm btn-outline-warning rounded-pill';
+    btnElement.innerHTML = 'Add';
+    showToast('<i class="bi bi-x-circle me-2 text-danger"></i>Failed to add to list', 'danger');
+  }
+}
+
+async function quickCreateList() {
+  const nameInput = document.getElementById('quickNewListName');
+  const name = nameInput.value.trim();
+  if (!name) return;
+  
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  const btn = nameInput.nextElementSibling;
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+  
+  // Create the list
+  const listId = await createCustomList(user.uid, name, '');
+  if (listId) {
+    // Add the movie immediately
+    await addMovieToCustomList(user.uid, listId, currentAddToListMovie);
+    nameInput.value = '';
+    showToast('<i class="bi bi-check-circle-fill me-2 text-success"></i>List created and movie added!');
+    await refreshCustomListsInModal(user.uid);
+  } else {
+    showToast('<i class="bi bi-x-circle me-2 text-danger"></i>Failed to create list', 'danger');
+  }
+  
+  btn.disabled = false;
+  btn.innerHTML = originalText;
 }
