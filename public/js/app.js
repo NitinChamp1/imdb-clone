@@ -26,7 +26,22 @@ document.addEventListener('click', e => {
 const WATCHLIST_KEY = 'rndb_clone_watchlist';
 
 function getWatchlist() {
-  try { return JSON.parse(localStorage.getItem(WATCHLIST_KEY)) || []; }
+  try { 
+    const list = JSON.parse(localStorage.getItem(WATCHLIST_KEY)) || [];
+    if (typeof TV_SHOWS !== 'undefined') {
+      let changed = false;
+      list.forEach(item => {
+        if (!item.type || item.type === 'movie') {
+          if (TV_SHOWS.find(t => String(t.id) === String(item.id))) {
+            item.type = 'tv';
+            changed = true;
+          }
+        }
+      });
+      if (changed) saveWatchlist(list);
+    }
+    return list;
+  }
   catch { return []; }
 }
 
