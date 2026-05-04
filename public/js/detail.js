@@ -328,6 +328,7 @@ async function loadReviewsFromFirestore(movieId, type) {
       .collection('reviews')
       .doc(String(movieId))
       .collection('userReviews')
+      .orderBy('helpfulCount', 'desc')
       .orderBy('createdAt', 'desc')
       .limit(20)
       .get();
@@ -341,6 +342,13 @@ async function loadReviewsFromFirestore(movieId, type) {
       const r = doc.data();
       const date = r.createdAt ? new Date(r.createdAt.toDate()).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Recently';
       const initial = (r.displayName || 'U')[0].toUpperCase();
+      const reviewId = doc.id;
+      const helpfulCount = r.helpfulCount || 0;
+      const helpfulBy = r.helpfulBy || [];
+      const user = (typeof auth !== 'undefined') ? auth.currentUser : null;
+      const uid = user ? user.uid : null;
+      const isHelpful = uid && helpfulBy.includes(uid);
+      
       const reviewHTML = `
         <div class="review-card mb-3">
           <div class="d-flex justify-content-between align-items-center mb-2">
@@ -354,11 +362,66 @@ async function loadReviewsFromFirestore(movieId, type) {
             ${r.rating ? `<div class="d-flex align-items-center gap-1 text-warning fw-700 small"><i class="bi bi-star-fill"></i>${r.rating}/10</div>` : ''}
           </div>
           <p class="small mb-2 lh-base" style="color:#e8e8e8;">${r.text}</p>
+          <button class="btn btn-sm ${isHelpful ? 'btn-warning' : 'btn-outline-secondary'} rounded-pill px-3" id="helpfulBtn-${reviewId}" style="font-size:0.75rem;" onclick="toggleHelpful('${movieId}', '${reviewId}')">
+            <i class="bi bi-hand-thumbs-up${isHelpful ? '-fill text-dark' : ''} me-1"></i><span id="helpfulCount-${reviewId}">${helpfulCount}</span> Helpful
+          </button>
         </div>`;
-      container.insertAdjacentHTML('afterbegin', reviewHTML);
+      container.insertAdjacentHTML('beforeend', reviewHTML);
     });
   } catch (err) {
     console.error('Error loading reviews from Firestore:', err);
+  }
+}
+
+async function toggleHelpful(movieId, reviewId) {
+  const user = (typeof auth !== 'undefined') ? auth.currentUser : null;
+  if (!user) {
+    const modal = new bootstrap.Modal(document.getElementById('authModal'));
+    modal.show();
+    return;
+  }
+  
+  if (typeof db === 'undefined') return;
+  
+  const docRef = db.collection('reviews').doc(String(movieId)).collection('userReviews').doc(reviewId);
+  const btn = document.getElementById(`helpfulBtn-${reviewId}`);
+  const countSpan = document.getElementById(`helpfulCount-${reviewId}`);
+  const icon = btn.querySelector('i');
+  
+  try {
+    const doc = await docRef.get();
+    if (!doc.exists) return;
+    
+    const data = doc.data();
+    let helpfulBy = data.helpfulBy || [];
+    let helpfulCount = data.helpfulCount || 0;
+    
+    if (helpfulBy.includes(user.uid)) {
+      // Remove helpful
+      helpfulBy = helpfulBy.filter(id => id !== user.uid);
+      helpfulCount--;
+      btn.classList.remove('btn-warning');
+      btn.classList.add('btn-outline-secondary');
+      icon.classList.remove('bi-hand-thumbs-up-fill', 'text-dark');
+      icon.classList.add('bi-hand-thumbs-up');
+    } else {
+      // Add helpful
+      helpfulBy.push(user.uid);
+      helpfulCount++;
+      btn.classList.remove('btn-outline-secondary');
+      btn.classList.add('btn-warning');
+      icon.classList.remove('bi-hand-thumbs-up');
+      icon.classList.add('bi-hand-thumbs-up-fill', 'text-dark');
+    }
+    
+    countSpan.textContent = helpfulCount;
+    await docRef.update({
+      helpfulBy: helpfulBy,
+      helpfulCount: helpfulCount
+    });
+  } catch(err) {
+    console.error('Error toggling helpful vote:', err);
+    showToast('<i class="bi bi-x-circle me-2 text-danger"></i>Failed to vote', 'danger');
   }
 }
 
@@ -533,37 +596,44 @@ async function submitReview() {
   // Save to Firestore
   if (typeof db !== 'undefined' && movieId) {
     try {
-      await db.collection('reviews').doc(String(movieId)).collection('userReviews').add({
+      const docRef = await db.collection('reviews').doc(String(movieId)).collection('userReviews').add({
         text,
         displayName,
         uid: user ? user.uid : null,
         rating,
         type,
+        helpfulCount: 0,
+        helpfulBy: [],
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
+      
+      // Show immediately in UI
+      const container = document.getElementById('reviewsContainer');
+      const initial = displayName[0].toUpperCase();
+      const reviewId = docRef.id;
+      const newReview = `
+        <div class="review-card mb-3 animate-in">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <div style="width:36px;height:36px;background:linear-gradient(135deg,#f5c518,#c9a60c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;font-size:0.85rem;">${initial}</div>
+              <div>
+                <div class="fw-600 small text-white">${displayName}</div>
+                <div class="text-muted" style="font-size:0.7rem;">Just now</div>
+              </div>
+            </div>
+            ${rating ? `<div class="d-flex align-items-center gap-1 text-warning fw-700 small"><i class="bi bi-star-fill"></i>${rating}/10</div>` : '<span class="badge bg-success">New</span>'}
+          </div>
+          <p class="small mb-2 lh-base" style="color:#e8e8e8;">${text}</p>
+          <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="helpfulBtn-${reviewId}" style="font-size:0.75rem;" onclick="toggleHelpful('${movieId}', '${reviewId}')">
+            <i class="bi bi-hand-thumbs-up me-1"></i><span id="helpfulCount-${reviewId}">0</span> Helpful
+          </button>
+        </div>`;
+      container.insertAdjacentHTML('afterbegin', newReview);
     } catch (err) {
       console.error('Error saving review to Firestore:', err);
     }
   }
 
-  // Show immediately in UI
-  const container = document.getElementById('reviewsContainer');
-  const initial = displayName[0].toUpperCase();
-  const newReview = `
-    <div class="review-card mb-3 animate-in">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <div class="d-flex align-items-center gap-2">
-          <div style="width:36px;height:36px;background:linear-gradient(135deg,#f5c518,#c9a60c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;font-size:0.85rem;">${initial}</div>
-          <div>
-            <div class="fw-600 small text-white">${displayName}</div>
-            <div class="text-muted" style="font-size:0.7rem;">Just now</div>
-          </div>
-        </div>
-        ${rating ? `<div class="d-flex align-items-center gap-1 text-warning fw-700 small"><i class="bi bi-star-fill"></i>${rating}/10</div>` : '<span class="badge bg-success">New</span>'}
-      </div>
-      <p class="small mb-0 lh-base" style="color:#e8e8e8;">${text}</p>
-    </div>`;
-  container.insertAdjacentHTML('afterbegin', newReview);
   document.getElementById('reviewText').value = '';
   
   // Hide the review box after submission
