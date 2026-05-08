@@ -61,30 +61,38 @@ async function loadUserReviews(uid) {
       return;
     }
 
-    let reviewsHtml = '';
+    let allReviews = [];
     let totalRating = 0;
     let count = 0;
 
     snapshot.forEach(doc => {
       const r = doc.data();
-      // Try to get movie ID from the parent doc reference
       const movieId = doc.ref.parent.parent.id;
-      
-      const date = r.createdAt ? new Date(r.createdAt.toDate()).toLocaleDateString() : 'Unknown Date';
+      allReviews.push({ id: doc.id, movieId, ...r });
       
       if (r.rating) {
         totalRating += r.rating;
         count++;
       }
+    });
 
+    // Default sort to newest
+    allReviews.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+
+    const top3 = allReviews.slice(0, 3);
+    let reviewsHtml = '';
+
+    top3.forEach(r => {
+      const date = r.createdAt ? new Date(r.createdAt.toDate()).toLocaleDateString() : 'Unknown Date';
+      
       reviewsHtml += `
         <div class="review-card mb-4">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
               <div class="text-muted small">${date}</div>
               <h5 class="text-white mb-0 mt-1">
-                <a href="detail.html?id=${movieId}&type=${r.type || 'movie'}" class="text-white text-decoration-none hover-warning">
-                  Review for Item #${movieId}
+                <a href="detail.html?id=${r.movieId}&type=${r.type || 'movie'}" class="text-white text-decoration-none hover-warning">
+                  Review for Item #${r.movieId}
                 </a>
               </h5>
             </div>
@@ -94,6 +102,14 @@ async function loadUserReviews(uid) {
         </div>
       `;
     });
+
+    if (allReviews.length > 3) {
+      reviewsHtml += `
+        <div class="text-center mt-3">
+          <a href="user-reviews.html" class="btn btn-outline-warning rounded-pill px-5">See More (...)</a>
+        </div>
+      `;
+    }
 
     container.innerHTML = reviewsHtml;
     
