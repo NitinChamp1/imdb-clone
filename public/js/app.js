@@ -10,11 +10,21 @@ document.addEventListener('click', e => {
   if (item) {
     e.preventDefault();
     const val = item.getAttribute('data-value');
-    const text = item.textContent;
+    const text = item.textContent.trim();
     const catInput = document.getElementById('searchCategory');
     const catLabel = document.getElementById('searchCategoryLabel');
+    const catBtn = document.querySelector('.search-category-btn');
     if (catInput) catInput.value = val;
     if (catLabel) catLabel.textContent = text;
+
+    // Highlight button blue when a specific category is active, revert when 'All'
+    if (catBtn) {
+      if (val === 'all') {
+        catBtn.classList.remove('cat-active');
+      } else {
+        catBtn.classList.add('cat-active');
+      }
+    }
 
     // Force-close the hover dropdown after selection
     const group = item.closest('.search-bar-group');

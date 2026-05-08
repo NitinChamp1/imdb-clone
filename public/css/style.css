@@ -125,6 +125,14 @@ body {
   transform: rotate(180deg);
 }
 
+/* Blue highlight when a specific category (not All) is active */
+.search-category-btn.cat-active {
+  background: #5799EF !important;
+  border-color: #5799EF !important;
+  color: #fff !important;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
 /* Open the category dropdown on HOVER (not just click) */
 @media (min-width: 992px) {
   /* Set starting state for animation */
