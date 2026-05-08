@@ -308,7 +308,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     <footer class="rndb-footer py-4">
       <div class="container-fluid px-4 text-center">
         <span class="rndb-logo mb-2 d-inline-block" style="font-size:1.2rem;">RNDb</span>
-        <p class="text-muted small mb-0">© 2025 RNDb Clone — Demo purposes only.</p>
       </div>
     </footer>`;
   // Load real reviews from Firestore
