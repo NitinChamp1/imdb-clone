@@ -160,6 +160,10 @@
           <label class="form-label small text-light">Description (optional)</label>
           <textarea class="form-control bg-dark text-white border-secondary" id="newListDesc" rows="2" placeholder="What's this list about?"></textarea>
         </div>
+        <div class="form-check form-switch mb-4">
+          <input class="form-check-input" type="checkbox" id="newListPublic" checked>
+          <label class="form-check-label text-light small" for="newListPublic">Make this list Public (shareable)</label>
+        </div>
         <button class="btn btn-warning w-100 rounded-pill fw-600" onclick="handleCreateList()">Create List</button>
       </div>
     </div>
@@ -176,6 +180,10 @@
           <p class="text-muted small mb-0" id="viewListDesc">List Description</p>
         </div>
         <div class="d-flex align-items-center gap-2">
+          <div class="form-check form-switch me-2 mb-0 mt-1 d-flex align-items-center">
+            <input class="form-check-input mt-0 me-2" type="checkbox" id="viewListPublicToggle" onchange="toggleListPrivacy(this.checked)">
+            <label class="form-check-label text-light small mb-0" style="line-height:1;" for="viewListPublicToggle">Public</label>
+          </div>
           <button class="btn btn-outline-info btn-sm rounded-pill" onclick="shareCustomList()"><i class="bi bi-share"></i></button>
           <button class="btn btn-outline-danger btn-sm rounded-pill" onclick="handleDeleteList()"><i class="bi bi-trash"></i></button>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>

@@ -228,6 +228,7 @@ function openCreateListModal() {
 async function handleCreateList() {
   const name = document.getElementById('newListName').value.trim();
   const desc = document.getElementById('newListDesc').value.trim();
+  const isPublic = document.getElementById('newListPublic').checked;
   if (!name) {
     showToast('<i class="bi bi-x-circle me-2 text-danger"></i>List name is required', 'danger');
     return;
@@ -237,7 +238,7 @@ async function handleCreateList() {
   if (!user) return;
   
   showToast('<i class="bi bi-hourglass-split me-2 text-warning"></i>Creating list...');
-  const id = await createCustomList(user.uid, name, desc);
+  const id = await createCustomList(user.uid, name, desc, isPublic);
   
   if (id) {
     bootstrap.Modal.getInstance(document.getElementById('createListModal')).hide();
@@ -255,6 +256,9 @@ function openViewListModal(listId) {
   currentViewListId = listId;
   document.getElementById('viewListTitle').textContent = list.name;
   document.getElementById('viewListDesc').textContent = list.description || 'No description';
+  
+  // Update privacy toggle (default to true if undefined for backward compatibility)
+  document.getElementById('viewListPublicToggle').checked = list.isPublic !== false;
   
   const container = document.getElementById('viewListItemsContainer');
   const movies = list.movies || [];
@@ -329,12 +333,42 @@ function shareCustomList() {
   if (!currentViewListId) return;
   const user = auth.currentUser;
   if (!user) return;
-  const url = "${window.location.origin}/shared-list.html?u=${user.uid}&l=${currentViewListId}";
+  
+  const list = currentLists.find(l => l.id === currentViewListId);
+  if (list && list.isPublic === false) {
+    showToast('<i class="bi bi-shield-lock me-2 text-warning"></i>Make the list Public first to share it', 'warning');
+    return;
+  }
+  
+  const url = `${window.location.origin}/shared-list.html?u=${user.uid}&l=${currentViewListId}`;
   if (navigator.share) {
     navigator.share({ title: 'My RNDb Custom List', url: url });
   } else {
     navigator.clipboard.writeText(url).then(() => {
       showToast('<i class="bi bi-link-45deg me-2 text-info"></i>Share link copied!');
     });
+  }
+}
+
+async function toggleListPrivacy(isPublic) {
+  if (!currentViewListId) return;
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  try {
+    await db.collection('users').doc(user.uid).collection('customLists').doc(currentViewListId).update({
+      isPublic: isPublic
+    });
+    
+    // Update local state
+    const list = currentLists.find(l => l.id === currentViewListId);
+    if (list) list.isPublic = isPublic;
+    
+    showToast(<i class="bi bi-eye me-2 text-info"></i>List is now );
+  } catch (err) {
+    console.error('Error updating privacy:', err);
+    showToast('<i class="bi bi-x-circle me-2 text-danger"></i>Failed to update privacy', 'danger');
+    // Revert toggle visually
+    document.getElementById('viewListPublicToggle').checked = !isPublic;
   }
 }

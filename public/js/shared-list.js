@@ -31,14 +31,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     const listData = doc.data();
-    const movies = listData.movies || [];
     
-    // Update Page Header
-    document.querySelector('.section-title').textContent = listData.name || 'Shared Custom List';
-    document.getElementById('listDescription').textContent = listData.description || `${movies.length} items curated by a user`;
-    
-    // Add Clone List button if user is logged in
     auth.onAuthStateChanged(user => {
+      // Check privacy
+      if (listData.isPublic === false && (!user || user.uid !== uid)) {
+        showError(container, "Private List", "This list is marked as private by the creator and cannot be viewed.");
+        document.getElementById('listHeaderActions').innerHTML = '';
+        return;
+      }
+      
+      const movies = listData.movies || [];
+    
+      // Update Page Header
+      document.querySelector('.section-title').textContent = listData.name || 'Shared Custom List';
+      document.getElementById('listDescription').textContent = listData.description || `${movies.length} items curated by a user`;
+      
+      // Add Clone List button if user is logged in
       if (user && user.uid !== uid) {
         document.getElementById('listHeaderActions').innerHTML = `
           <button class="btn btn-outline-warning rounded-pill px-4" onclick="cloneListToProfile('${uid}', '${listId}', '${listData.name.replace(/'/g, "\\'")}')">
@@ -46,43 +54,43 @@ document.addEventListener('DOMContentLoaded', async () => {
           </button>
         `;
       }
-    });
 
-    if (movies.length === 0) {
-      container.innerHTML = `
-        <div class="text-center py-5">
-          <i class="bi bi-collection-play text-muted" style="font-size: 3rem;"></i>
-          <h5 class="text-white mt-3">This list is empty</h5>
-          <p class="text-muted">The creator hasn't added any movies or shows yet.</p>
-        </div>
-      `;
-      return;
-    }
-    
-    // Render the grid
-    let html = '<div class="row g-3">';
-    movies.forEach(m => {
-      html += `
-        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-          <div class="movie-card position-relative" onclick="goToDetail(${m.id}, '${m.type}')" style="cursor:pointer;">
-            <div class="movie-poster-wrap">
-              <img class="movie-poster" src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/1e1e1e/888?text=?'"/>
-              <button class="movie-watchlist-btn ${isInWatchlist(m.id) ? 'in-watchlist' : ''}" data-watchlist-id="${m.id}"
-                onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${m.poster}', '${m.year}', ${m.rating}, '${m.type}')">
-                <i class="bi ${isInWatchlist(m.id) ? 'bi-bookmark-fill' : 'bi-bookmark-plus'}"></i>
-              </button>
-            </div>
-            <div class="movie-info">
-              <div class="movie-title">${m.title}</div>
-              <div class="movie-rating"><i class="bi bi-star-fill rating-star"></i>${m.rating || '?'}</div>
+      if (movies.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-5">
+            <i class="bi bi-collection-play text-muted" style="font-size: 3rem;"></i>
+            <h5 class="text-white mt-3">This list is empty</h5>
+            <p class="text-muted">The creator hasn't added any movies or shows yet.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // Render the grid
+      let html = '<div class="row g-3">';
+      movies.forEach(m => {
+        html += `
+          <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="movie-card position-relative" onclick="goToDetail(${m.id}, '${m.type}')" style="cursor:pointer;">
+              <div class="movie-poster-wrap">
+                <img class="movie-poster" src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/1e1e1e/888?text=?'"/>
+                <button class="movie-watchlist-btn ${isInWatchlist(m.id) ? 'in-watchlist' : ''}" data-watchlist-id="${m.id}"
+                  onclick="event.stopPropagation(); toggleWatchlist(${m.id}, '${m.title.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${m.poster}', '${m.year}', ${m.rating}, '${m.type}')">
+                  <i class="bi ${isInWatchlist(m.id) ? 'bi-bookmark-fill' : 'bi-bookmark-plus'}"></i>
+                </button>
+              </div>
+              <div class="movie-info">
+                <div class="movie-title">${m.title}</div>
+                <div class="movie-rating"><i class="bi bi-star-fill rating-star"></i>${m.rating || '?'}</div>
+              </div>
             </div>
           </div>
-        </div>
-      `;
+        `;
+      });
+      html += '</div>';
+      
+      container.innerHTML = html;
     });
-    html += '</div>';
-    
-    container.innerHTML = html;
     
   } catch (err) {
     console.error("Error loading shared list:", err);

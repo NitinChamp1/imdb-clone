@@ -80,11 +80,12 @@ async function removeFromCloudWatchlist(userId, itemId) {
 /**
  * Creates a new custom movie list for the user.
  */
-async function createCustomList(userId, listName, description = '') {
+async function createCustomList(userId, listName, description = '', isPublic = true) {
   try {
     const listRef = await db.collection('users').doc(userId).collection('customLists').add({
       name: listName,
       description: description,
+      isPublic: isPublic,
       movies: [], // Array of movie objects
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
