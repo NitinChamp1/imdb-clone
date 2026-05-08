@@ -364,7 +364,7 @@ async function toggleListPrivacy(isPublic) {
     const list = currentLists.find(l => l.id === currentViewListId);
     if (list) list.isPublic = isPublic;
     
-    showToast(<i class="bi bi-eye me-2 text-info"></i>List is now );
+    showToast(isPublic ? '<i class="bi bi-eye me-2 text-info"></i>List is now Public' : '<i class="bi bi-eye-slash me-2 text-info"></i>List is now Private');
   } catch (err) {
     console.error('Error updating privacy:', err);
     showToast('<i class="bi bi-x-circle me-2 text-danger"></i>Failed to update privacy', 'danger');
