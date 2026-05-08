@@ -14,8 +14,37 @@
     .credits-table th, .credits-table td { border-bottom: 1px solid #333; color: #fff; padding: 12px 16px; }
     .credits-year { width: 80px; font-weight: 600; color: #aaa; text-align: center; }
     .known-for-card { width: 140px; min-width: 140px; }
-    .personal-info-block { font-size: 0.9rem; margin-bottom: 15px; }
-    .personal-info-label { font-weight: 600; margin-bottom: 3px; }
+
+    /* Personal Info Sidebar */
+    .personal-info-block {
+      font-size: 0.88rem;
+      margin-bottom: 0;
+      padding: 11px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.2s ease;
+    }
+    .personal-info-block:first-of-type { border-top: 1px solid rgba(255,255,255,0.06); }
+    .personal-info-block:hover { background: rgba(245,197,24,0.04); }
+
+    /* Label — RNDb yellow, uppercase, small caps feel */
+    .personal-info-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #f5c518;           /* RNDb yellow */
+      margin-bottom: 3px;
+      opacity: 0.9;
+    }
+
+    /* Value — soft off-white, readable, not harsh pure white */
+    .personal-info-value {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: #d4d4d4;
+      line-height: 1.45;
+      white-space: pre-line;
+    }
   </style>
 </head>
 <body class="bg-dark-custom d-flex flex-column min-vh-100">
@@ -56,29 +85,29 @@
           
           <h4 class="text-white mb-3">Personal Info</h4>
           
-          <div class="personal-info-block text-white">
+          <div class="personal-info-block">
             <div class="personal-info-label">Known For</div>
-            <div id="personKnownForDept" class="text-light"></div>
+            <div id="personKnownForDept" class="personal-info-value"></div>
           </div>
           
-          <div class="personal-info-block text-white">
+          <div class="personal-info-block">
             <div class="personal-info-label">Gender</div>
-            <div id="personGender" class="text-light"></div>
+            <div id="personGender" class="personal-info-value"></div>
           </div>
           
-          <div class="personal-info-block text-white">
+          <div class="personal-info-block">
             <div class="personal-info-label">Birthday</div>
-            <div id="personBirthday" class="text-light"></div>
+            <div id="personBirthday" class="personal-info-value"></div>
           </div>
           
-          <div class="personal-info-block text-white">
+          <div class="personal-info-block">
             <div class="personal-info-label">Place of Birth</div>
-            <div id="personBirthplace" class="text-light"></div>
+            <div id="personBirthplace" class="personal-info-value"></div>
           </div>
           
-          <div class="personal-info-block text-white">
+          <div class="personal-info-block">
             <div class="personal-info-label">Also Known As</div>
-            <div id="personAlsoKnownAs" class="text-light" style="white-space: pre-line;"></div>
+            <div id="personAlsoKnownAs" class="personal-info-value"></div>
           </div>
         </div>
 
