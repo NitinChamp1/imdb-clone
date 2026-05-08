@@ -125,6 +125,40 @@ body {
   transform: rotate(180deg);
 }
 
+/* Open the category dropdown on HOVER (not just click) */
+@media (min-width: 992px) {
+  /* Set starting state for animation */
+  .search-bar-group > ul.dropdown-menu {
+    opacity: 0;
+    transform: translateY(10px);
+    border: 1px solid rgba(245,197,24,0.15);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+    border-radius: 10px;
+    margin-top: 2px !important;
+    background: #1a1a1a;
+    min-width: 130px;
+  }
+  .search-bar-group:hover > ul.dropdown-menu {
+    display: block;
+    animation: dropFadeIn 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  /* Rotate caret on hover too */
+  .search-bar-group:hover .search-category-btn::after {
+    transform: rotate(180deg);
+  }
+  /* Style the items inside */
+  .search-bar-group ul.dropdown-menu .dropdown-item {
+    border-radius: 8px;
+    font-size: 0.88rem;
+    transition: all var(--transition);
+  }
+  .search-bar-group ul.dropdown-menu .dropdown-item:hover {
+    background: rgba(245,197,24,0.1);
+    color: var(--rndb-yellow);
+    padding-left: 1.5rem;
+  }
+}
+
 .search-input {
   background: #2a2a2a;
   border: 1px solid #3a3a3a;
