@@ -324,3 +324,17 @@ async function handleDeleteList() {
     }
   }
 }
+
+function shareCustomList() {
+  if (!currentViewListId) return;
+  const user = auth.currentUser;
+  if (!user) return;
+  const url = "${window.location.origin}/shared-list.html?u=${user.uid}&l=${currentViewListId}";
+  if (navigator.share) {
+    navigator.share({ title: 'My RNDb Custom List', url: url });
+  } else {
+    navigator.clipboard.writeText(url).then(() => {
+      showToast('<i class="bi bi-link-45deg me-2 text-info"></i>Share link copied!');
+    });
+  }
+}
