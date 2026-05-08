@@ -73,10 +73,13 @@ body {
   letter-spacing: -0.5px;
   display: inline-block;
   transition: transform var(--transition), box-shadow var(--transition);
+  will-change: transform, box-shadow;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 
 .rndb-logo:hover {
-  transform: scale(1.05);
+  transform: scale(1.05) translateZ(0);
   box-shadow: var(--shadow-glow);
 }
 
