@@ -74,6 +74,7 @@ async function loadAllReviews(uid) {
       container.innerHTML = `<div class="text-danger py-4">Failed to load reviews. Please try again later.<br><small class="text-muted">Error details: ${err.message}</small></div>`;
     }
   }
+}
 
 function sortReviews(sortType) {
   if (sortType === 'newest') {
