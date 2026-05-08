@@ -931,9 +931,10 @@ body {
   display: block;
   transition: border-color var(--transition);
 }
-.cast-card:hover .cast-img { border-color: var(--rndb-yellow); }
-.cast-name { font-size: 0.78rem; font-weight: 600; color: #ddd; }
+.cast-card:hover .cast-img { border-color: var(--rndb-yellow); box-shadow: 0 0 12px rgba(245,197,24,0.35); }
+.cast-name { font-size: 0.78rem; font-weight: 600; color: #ddd; transition: color var(--transition); }
 .cast-role { font-size: 0.7rem; color: var(--rndb-muted); }
+.cast-card:hover .cast-name { color: var(--rndb-yellow); }
 
 /* User Rate Stars */
 .user-rate-stars {

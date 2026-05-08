@@ -35,11 +35,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       ? `https://image.tmdb.org/t/p/w185${c.profile_path}` 
       : `https://via.placeholder.com/80x80/222/888?text=${encodeURIComponent(c.name[0])}`;
     return `
-      <div class="cast-card flex-shrink-0">
-        <img src="${imgUrl}" class="cast-img" alt="${c.name}" onerror="this.src='https://via.placeholder.com/80x80/222/888?text=${encodeURIComponent(c.name[0])}'"/>
-        <div class="cast-name">${c.name}</div>
-        <div class="cast-role">${c.character || 'Actor'}</div>
-      </div>`;
+      <a href="person.html?id=${c.id}" class="text-decoration-none" title="View ${c.name}'s profile">
+        <div class="cast-card flex-shrink-0">
+          <img src="${imgUrl}" class="cast-img" alt="${c.name}" onerror="this.src='https://via.placeholder.com/80x80/222/888?text=${encodeURIComponent(c.name[0])}'"/>
+          <div class="cast-name">${c.name}</div>
+          <div class="cast-role">${c.character || 'Actor'}</div>
+        </div>
+      </a>`;
   }).join('');
 
   const userRating = getUserRating(item.id);
