@@ -146,6 +146,12 @@ body {
     animation: dropFadeIn 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   }
 
+  /* Force-hide immediately after a category is clicked */
+  .search-bar-group.cat-selected > ul.dropdown-menu {
+    display: none !important;
+    animation: none;
+  }
+
   /* Rotate caret only when button is hovered */
   .search-bar-group:has(.search-category-btn:hover) .search-category-btn::after {
     transform: rotate(180deg);

@@ -15,6 +15,13 @@ document.addEventListener('click', e => {
     const catLabel = document.getElementById('searchCategoryLabel');
     if (catInput) catInput.value = val;
     if (catLabel) catLabel.textContent = text;
+
+    // Force-close the hover dropdown after selection
+    const group = item.closest('.search-bar-group');
+    if (group) {
+      group.classList.add('cat-selected');
+      setTimeout(() => group.classList.remove('cat-selected'), 300);
+    }
   }
 });
 
