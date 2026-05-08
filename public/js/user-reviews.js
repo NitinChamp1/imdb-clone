@@ -27,7 +27,7 @@ async function loadAllReviews(uid) {
   container.innerHTML = `<div class="text-center py-5"><div class="spinner-border text-warning" role="status"><span class="visually-hidden">Loading...</span></div></div>`;
 
   try {
-    const snapshot = await db.collectionGroup('userReviews').where('uid', '==', uid).get();
+    const snapshot = await db.collectionGroup('userReviews').where('uid', '==', uid).orderBy('createdAt', 'desc').get();
     
     if (snapshot.empty) {
       container.innerHTML = `
@@ -54,9 +54,26 @@ async function loadAllReviews(uid) {
 
   } catch (err) {
     console.error("Error loading reviews:", err);
-    container.innerHTML = `<div class="text-danger py-4">Failed to load reviews. Please try again later.</div>`;
+    if (err.code === 'failed-precondition' || err.message.includes("requires an index")) {
+      container.innerHTML = `
+        <div class="alert alert-warning text-start">
+          <strong>Database Index Required!</strong><br>
+          To show all your reviews, Firebase needs a specific index. 
+          Check the browser console (Right Click -> Inspect -> Console) for a blue link, click it, and wait 3-5 minutes.
+        </div>
+      `;
+    } else if (err.code === 'permission-denied' || err.message.includes("permissions")) {
+      container.innerHTML = `
+        <div class="alert alert-danger text-start">
+          <strong>Permission Denied!</strong><br>
+          Your Firebase rules are blocking this query. Go to Firebase Console -> Firestore -> Rules, and add:<br>
+          <code class="d-block mt-2 bg-dark p-2 rounded text-light">match /{path=**}/userReviews/{reviewId} { allow read: if true; }</code>
+        </div>
+      `;
+    } else {
+      container.innerHTML = `<div class="text-danger py-4">Failed to load reviews. Please try again later.<br><small class="text-muted">Error details: ${err.message}</small></div>`;
+    }
   }
-}
 
 function sortReviews(sortType) {
   if (sortType === 'newest') {
