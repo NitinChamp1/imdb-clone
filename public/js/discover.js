@@ -16,15 +16,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 function buildYearDropdown() {
   const select = document.getElementById('filterYear');
   const currentYear = new Date().getFullYear();
-  const firstYear = 1888; // Year of the first ever motion picture
+  const firstYear = 1888; // Year of the first ever motion picture (Roundhay Garden Scene)
 
   // Group years by decade, newest first
-  for (let decadeStart = Math.floor(currentYear / 10) * 10; decadeStart >= firstYear; decadeStart -= 10) {
+  // Condition: decade must overlap with [firstYear, currentYear], so (decadeStart + 9 >= firstYear)
+  for (let decadeStart = Math.floor(currentYear / 10) * 10; decadeStart + 9 >= firstYear; decadeStart -= 10) {
     const decadeEnd = Math.min(decadeStart + 9, currentYear);
     const decadeFloor = Math.max(decadeStart, firstYear);
 
     const optgroup = document.createElement('optgroup');
-    optgroup.label = `── ${decadeFloor === firstYear ? firstYear : decadeStart}s ──`;
+    optgroup.label = `── ${decadeStart}s ──`;
 
     for (let y = decadeEnd; y >= decadeFloor; y--) {
       const opt = document.createElement('option');
