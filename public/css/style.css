@@ -138,14 +138,19 @@ body {
     background: #1a1a1a;
     min-width: 130px;
   }
-  .search-bar-group:hover > ul.dropdown-menu {
+
+  /* ONLY open when hovering the "All" button itself, OR when already on the dropdown list */
+  .search-bar-group:has(.search-category-btn:hover) > ul.dropdown-menu,
+  .search-bar-group > ul.dropdown-menu:hover {
     display: block;
     animation: dropFadeIn 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   }
-  /* Rotate caret on hover too */
-  .search-bar-group:hover .search-category-btn::after {
+
+  /* Rotate caret only when button is hovered */
+  .search-bar-group:has(.search-category-btn:hover) .search-category-btn::after {
     transform: rotate(180deg);
   }
+
   /* Style the items inside */
   .search-bar-group ul.dropdown-menu .dropdown-item {
     border-radius: 8px;
