@@ -20,11 +20,22 @@ async function loadUserProfile(user) {
   document.getElementById('profileName').textContent = name;
   document.getElementById('profileEmail').textContent = user.email;
 
-  // Avatar
-  if (user.photoURL) {
-    document.getElementById('profileAvatar').innerHTML = `<img src="${user.photoURL}" class="w-100 h-100 rounded-circle" style="object-fit:cover;">`;
-  } else {
-    document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
+  // Avatar from Firestore (priority) or Auth (fallback)
+  try {
+    const userDoc = await db.collection('users').doc(user.uid).get();
+    if (userDoc.exists && userDoc.data().avatar) {
+      document.getElementById('profileAvatar').innerHTML = `<img src="${userDoc.data().avatar}" class="w-100 h-100 rounded-circle" style="object-fit:cover;">`;
+    } else if (user.photoURL) {
+      document.getElementById('profileAvatar').innerHTML = `<img src="${user.photoURL}" class="w-100 h-100 rounded-circle" style="object-fit:cover;">`;
+    } else {
+      document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
+    }
+  } catch (e) {
+    if (user.photoURL) {
+      document.getElementById('profileAvatar').innerHTML = `<img src="${user.photoURL}" class="w-100 h-100 rounded-circle" style="object-fit:cover;">`;
+    } else {
+      document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
+    }
   }
 
   // Load Watchlist Count
@@ -143,7 +154,7 @@ async function loadUserReviews(uid) {
   }
 }
 
-// Very simple avatar uploader placeholder
+// Avatar uploader using Firestore (Free) instead of Storage (Paid)
 async function uploadAvatar(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -151,19 +162,40 @@ async function uploadAvatar(e) {
   const user = auth.currentUser;
   if (!user) return;
 
-  showToast('<i class="bi bi-hourglass-split me-2 text-warning"></i>Uploading avatar...');
+  // Limit size to 500KB to keep the database fast
+  if (file.size > 500 * 1024) {
+    showToast('<i class="bi bi-exclamation-triangle me-2 text-warning"></i>Image too large (max 500KB)', 'danger');
+    return;
+  }
+
+  showToast('<i class="bi bi-hourglass-split me-2 text-warning"></i>Saving avatar...');
   
-  // Real app: upload to Firebase Storage, then update profile photoURL.
-  // Since we haven't formally configured storage bucket rules, we'll just mock it or do a base64 for now
   const reader = new FileReader();
-  reader.onload = async (e) => {
-    const base64 = e.target.result;
+  reader.onload = async (event) => {
+    const base64 = event.target.result;
     try {
-      await user.updateProfile({ photoURL: base64 });
+      // Save the base64 string directly to Firestore
+      await db.collection('users').doc(user.uid).set({
+        avatar: base64,
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+
+      // Update UI in profile
       document.getElementById('profileAvatar').innerHTML = `<img src="${base64}" class="w-100 h-100 rounded-circle" style="object-fit:cover;">`;
+      
+      // Update UI in navbar
+      const navAvatar = document.getElementById('navUserAvatar');
+      const defaultIcon = document.getElementById('navDefaultAvatar');
+      if (navAvatar && defaultIcon) {
+        navAvatar.src = base64;
+        navAvatar.classList.remove('d-none');
+        defaultIcon.classList.add('d-none');
+      }
+
       showToast('<i class="bi bi-check-circle-fill me-2 text-success"></i>Avatar updated!');
     } catch(err) {
-      showToast('<i class="bi bi-x-circle me-2 text-danger"></i>Update failed', 'danger');
+      console.error("Upload error:", err);
+      showToast('<i class="bi bi-x-circle me-2 text-danger"></i>Save failed', 'danger');
     }
   };
   reader.readAsDataURL(file);

@@ -413,7 +413,10 @@ function ensureAuthUI() {
         <button class="btn btn-warning btn-sm rounded-pill px-3 fw-600" id="navSignInBtn" onclick="openLoginModal()">Sign In</button>
         <div id="userProfileDropdown" class="dropdown d-none">
           <button class="btn btn-outline-light btn-sm rounded-pill px-3 d-flex align-items-center gap-2 dropdown-toggle" data-bs-toggle="dropdown">
-            <i class="bi bi-person-circle fs-5"></i>
+            <div id="navUserAvatarContainer" class="d-flex align-items-center justify-content-center overflow-hidden rounded-circle" style="width:24px; height:24px; background:rgba(255,255,255,0.1);">
+              <i class="bi bi-person-circle fs-5" id="navDefaultAvatar"></i>
+              <img id="navUserAvatar" src="" class="w-100 h-100 d-none" style="object-fit:cover;">
+            </div>
             <span id="navUserName">User</span>
           </button>
           <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
@@ -495,6 +498,27 @@ document.addEventListener('DOMContentLoaded', () => {
         signInBtn?.classList.add('d-none');
         profileDrop?.classList.remove('d-none');
         if (navName) navName.textContent = user.displayName || user.email.split('@')[0];
+        
+        // Handle navbar avatar
+        const navAvatar = document.getElementById('navUserAvatar');
+        const defaultIcon = document.getElementById('navDefaultAvatar');
+        
+        // 1. Set fallback from Auth
+        if (user.photoURL && navAvatar && defaultIcon) {
+          navAvatar.src = user.photoURL;
+          navAvatar.classList.remove('d-none');
+          defaultIcon.classList.add('d-none');
+        }
+
+        // 2. Override with custom Firestore avatar if exists (Free Tier workaround)
+        db.collection('users').doc(user.uid).get().then(doc => {
+          if (doc.exists && doc.data().avatar && navAvatar && defaultIcon) {
+            navAvatar.src = doc.data().avatar;
+            navAvatar.classList.remove('d-none');
+            defaultIcon.classList.add('d-none');
+          }
+        }).catch(err => console.log("No custom avatar found or permission error"));
+
         syncWatchlistFromFirestore(user.uid);
       } else {
         signInBtn?.classList.remove('d-none');
