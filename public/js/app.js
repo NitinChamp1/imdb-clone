@@ -310,6 +310,26 @@ function backToLogin() {
   openLoginModal();
 }
 
+function validateSignupPassword() {
+  const pass = document.getElementById('signupPass').value;
+  const confirmPass = document.getElementById('signupConfirmPass').value;
+  
+  const passError = document.getElementById('signupPassError');
+  const confirmError = document.getElementById('signupConfirmPassError');
+  
+  if (pass.length > 0 && pass.length < 8) {
+    passError.classList.remove('d-none');
+  } else {
+    passError.classList.add('d-none');
+  }
+  
+  if (confirmPass.length > 0 && pass !== confirmPass) {
+    confirmError.classList.remove('d-none');
+  } else {
+    confirmError.classList.add('d-none');
+  }
+}
+
 function handleEmailSignup() {
   const name = document.getElementById('signupName').value.trim();
   const email = document.getElementById('signupEmail').value.trim();
@@ -318,6 +338,7 @@ function handleEmailSignup() {
   const dob = document.getElementById('signupDOB').value;
 
   if (!name || !email || !pass || !dob) return showToast("Please fill in all fields", "danger");
+  if (pass.length < 8) return showToast("Password must be at least 8 characters", "danger");
   if (pass !== confirmPass) return showToast("Passwords do not match", "danger");
   
   auth.createUserWithEmailAndPassword(email, pass)
@@ -470,11 +491,13 @@ function ensureAuthUI() {
                 </div>
                 <div class="mb-3">
                   <label class="form-label small text-light">Password</label>
-                  <input type="password" class="form-control bg-dark text-white border-secondary" id="signupPass" placeholder="Enter password (min 6 chars)">
+                  <input type="password" class="form-control bg-dark text-white border-secondary" id="signupPass" placeholder="At least 8 characters" oninput="validateSignupPassword()">
+                  <div id="signupPassError" class="text-danger small mt-1 d-none">At least 8 characters</div>
                 </div>
                 <div class="mb-3">
                   <label class="form-label small text-light">Confirm Password</label>
-                  <input type="password" class="form-control bg-dark text-white border-secondary" id="signupConfirmPass" placeholder="Confirm your password">
+                  <input type="password" class="form-control bg-dark text-white border-secondary" id="signupConfirmPass" placeholder="Confirm your password" oninput="validateSignupPassword()">
+                  <div id="signupConfirmPassError" class="text-danger small mt-1 d-none">Write same password</div>
                 </div>
                 <div class="mb-3">
                   <label class="form-label small text-light">Date of Birth</label>
