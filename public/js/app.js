@@ -479,7 +479,6 @@ function ensureAuthUI() {
                 <div class="mb-3">
                   <label class="form-label small text-light">Date of Birth</label>
                   <input type="date" class="form-control bg-dark text-white border-secondary" id="signupDOB">
-                  <div class="form-text text-muted" style="font-size:0.7rem;">Needed for age-appropriate content (18+ for R-rated).</div>
                 </div>
                 <button class="btn btn-warning w-100 rounded-pill fw-600 mb-2" onclick="handleEmailSignup()">Sign Up</button>
                 <button class="btn btn-link text-warning w-100 text-decoration-none small" onclick="backToLogin()">Already have an account? Sign In</button>

@@ -25,15 +25,6 @@ async function loadUserProfile(user) {
     const userDoc = await db.collection('users').doc(user.uid).get();
     if (userDoc.exists) {
       const data = userDoc.data();
-      // DOB Display
-      if (data.dob) {
-        const dobEl = document.getElementById('profileDOB');
-        if (dobEl) {
-          const age = calculateAge(data.dob);
-          dobEl.innerHTML = `<i class="bi bi-calendar-event me-1"></i>DOB: ${data.dob} <span class="badge bg-warning text-dark ms-1">${age} Years Old</span>`;
-          dobEl.style.display = 'block';
-        }
-      }
       // Avatar
       if (data.avatar) {
         document.getElementById('profileAvatar').innerHTML = `<img src="${data.avatar}" class="w-100 h-100 rounded-circle" style="object-fit:cover;">`;
