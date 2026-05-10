@@ -335,11 +335,9 @@ function handleEmailSignup() {
   const email = document.getElementById('signupEmail').value.trim();
   const pass = document.getElementById('signupPass').value;
   const confirmPass = document.getElementById('signupConfirmPass').value;
-  const month = document.getElementById('signupMonth').value;
-  const year = document.getElementById('signupYear').value;
+  const dob = document.getElementById('signupDOB').value;
 
-  if (!name || !email || !pass || !confirmPass || !month || !year) return showToast("Please fill in all fields", "danger");
-  const dob = `${year}-${month}-01`;
+  if (!name || !email || !pass || !dob) return showToast("Please fill in all fields", "danger");
   if (pass.length < 8) return showToast("Password must be at least 8 characters", "danger");
   if (pass !== confirmPass) return showToast("Passwords do not match", "danger");
   
@@ -435,16 +433,10 @@ async function syncWatchlistFromFirestore(userId) {
 
 function ensureAuthUI() {
   // Always refresh or check if DOB is missing to ensure latest UI
-  if (!document.getElementById('loginModal') || !document.getElementById('signupMonth')) {
+  if (!document.getElementById('loginModal') || !document.getElementById('signupDOB')) {
     // Remove old modals if they exist but are outdated
     document.getElementById('loginModal')?.remove();
     document.getElementById('signupModal')?.remove();
-    
-    const currentYear = new Date().getFullYear();
-    let yearOptions = '<option value="" selected disabled>Year</option>';
-    for (let i = currentYear; i >= 1900; i--) {
-      yearOptions += `<option value="${i}">${i}</option>`;
-    }
 
     const modalsHtml = `
       <!-- Login Modal -->
@@ -509,26 +501,7 @@ function ensureAuthUI() {
                 </div>
                 <div class="mb-3">
                   <label class="form-label small text-light">Date of Birth</label>
-                  <div class="d-flex gap-2">
-                    <select class="form-select bg-dark text-white border-secondary" id="signupMonth">
-                      <option value="" selected disabled>Month</option>
-                      <option value="01">January</option>
-                      <option value="02">February</option>
-                      <option value="03">March</option>
-                      <option value="04">April</option>
-                      <option value="05">May</option>
-                      <option value="06">June</option>
-                      <option value="07">July</option>
-                      <option value="08">August</option>
-                      <option value="09">September</option>
-                      <option value="10">October</option>
-                      <option value="11">November</option>
-                      <option value="12">December</option>
-                    </select>
-                    <select class="form-select bg-dark text-white border-secondary" id="signupYear">
-                      ${yearOptions}
-                    </select>
-                  </div>
+                  <input type="date" class="form-control bg-dark text-white border-secondary" id="signupDOB">
                 </div>
                 <button class="btn btn-warning w-100 rounded-pill fw-600 mb-2" onclick="handleEmailSignup()">Sign Up</button>
                 <button class="btn btn-link w-100 text-decoration-none small" onclick="backToLogin()"><span class="text-muted">Already have an account?</span> <span class="text-warning">Sign In</span></button>
