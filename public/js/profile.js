@@ -23,8 +23,25 @@ async function loadUserProfile(user) {
   // Avatar from Firestore (priority) or Auth (fallback)
   try {
     const userDoc = await db.collection('users').doc(user.uid).get();
-    if (userDoc.exists && userDoc.data().avatar) {
-      document.getElementById('profileAvatar').innerHTML = `<img src="${userDoc.data().avatar}" class="w-100 h-100 rounded-circle" style="object-fit:cover;">`;
+    if (userDoc.exists) {
+      const data = userDoc.data();
+      // DOB Display
+      if (data.dob) {
+        const dobEl = document.getElementById('profileDOB');
+        if (dobEl) {
+          const age = calculateAge(data.dob);
+          dobEl.innerHTML = `<i class="bi bi-calendar-event me-1"></i>DOB: ${data.dob} <span class="badge bg-warning text-dark ms-1">${age} Years Old</span>`;
+          dobEl.style.display = 'block';
+        }
+      }
+      // Avatar
+      if (data.avatar) {
+        document.getElementById('profileAvatar').innerHTML = `<img src="${data.avatar}" class="w-100 h-100 rounded-circle" style="object-fit:cover;">`;
+      } else if (user.photoURL) {
+        document.getElementById('profileAvatar').innerHTML = `<img src="${user.photoURL}" class="w-100 h-100 rounded-circle" style="object-fit:cover;">`;
+      } else {
+        document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
+      }
     } else if (user.photoURL) {
       document.getElementById('profileAvatar').innerHTML = `<img src="${user.photoURL}" class="w-100 h-100 rounded-circle" style="object-fit:cover;">`;
     } else {

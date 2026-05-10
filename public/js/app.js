@@ -134,6 +134,32 @@ function showToast(msg, type = 'success') {
   bsToast.show();
 }
 
+// ---- Age & Content Filtering ----
+let currentUserAge = null;
+
+function calculateAge(dobString) {
+  if (!dobString) return null;
+  const today = new Date();
+  const birthDate = new Date(dobString);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) { age--; }
+  return age;
+}
+
+function isAdultContent(pgRating) {
+  if (!pgRating) return false;
+  const adultRatings = ['R', 'A', '18+', 'TV-MA'];
+  return adultRatings.includes(pgRating.toUpperCase());
+}
+
+function canUserView(pgRating) {
+  if (!isAdultContent(pgRating)) return true;
+  // If no age is known (guest), we default to hiding adult content for safety
+  if (currentUserAge === null) return false; 
+  return currentUserAge >= 18;
+}
+
 // ---- Star Rating Display ----
 function renderStars(rating) {
   const full = Math.floor(rating / 2);
@@ -289,14 +315,25 @@ function handleEmailSignup() {
   const email = document.getElementById('signupEmail').value.trim();
   const pass = document.getElementById('signupPass').value;
   const confirmPass = document.getElementById('signupConfirmPass').value;
+  const dob = document.getElementById('signupDOB').value;
 
-  if (!name || !email || !pass) return showToast("Please fill in all fields", "danger");
+  if (!name || !email || !pass || !dob) return showToast("Please fill in all fields", "danger");
   if (pass !== confirmPass) return showToast("Passwords do not match", "danger");
   
   auth.createUserWithEmailAndPassword(email, pass)
     .then((userCredential) => {
+      const user = userCredential.user;
       // Update profile with name
-      return userCredential.user.updateProfile({ displayName: name });
+      return Promise.all([
+        user.updateProfile({ displayName: name }),
+        // Save DOB to Firestore
+        db.collection('users').doc(user.uid).set({
+          name: name,
+          email: email,
+          dob: dob,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true })
+      ]);
     })
     .then(() => {
       bootstrap.Modal.getInstance(document.getElementById('signupModal'))?.hide();
@@ -307,8 +344,48 @@ function handleEmailSignup() {
 
 function loginWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
+  // Request birthday scope (Note: User must still approve this in Google popup)
+  provider.addScope('https://www.googleapis.com/auth/user.birthday.read');
+  
   auth.signInWithPopup(provider)
-    .then(() => {
+    .then(async (result) => {
+      const user = result.user;
+      const credential = result.credential;
+      
+      // Try to fetch birthday from Google People API
+      let googleDOB = null;
+      if (credential.accessToken) {
+        try {
+          const resp = await fetch('https://people.googleapis.com/v1/people/me?personFields=birthdays', {
+            headers: { 'Authorization': `Bearer ${credential.accessToken}` }
+          });
+          const data = await resp.json();
+          if (data.birthdays && data.birthdays.length > 0) {
+            const b = data.birthdays[0].date;
+            if (b.year && b.month && b.day) {
+              googleDOB = `${b.year}-${String(b.month).padStart(2, '0')}-${String(b.day).padStart(2, '0')}`;
+            }
+          }
+        } catch (e) { console.warn("Could not fetch Google birthday:", e); }
+      }
+
+      // Save to Firestore
+      const userRef = db.collection('users').doc(user.uid);
+      const doc = await userRef.get();
+      
+      const updateData = {
+        name: user.displayName,
+        email: user.email,
+        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      
+      // Only set DOB if we found one from Google AND it's not already set in our DB
+      if (googleDOB && (!doc.exists || !doc.data().dob)) {
+        updateData.dob = googleDOB;
+      }
+
+      await userRef.set(updateData, { merge: true });
+
       bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
       showToast("Signed in with Google!");
     })
@@ -393,6 +470,11 @@ function ensureAuthUI() {
                 <div class="mb-3">
                   <label class="form-label small text-light">Confirm Password</label>
                   <input type="password" class="form-control bg-dark text-white border-secondary" id="signupConfirmPass" placeholder="Confirm your password">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small text-light">Date of Birth</label>
+                  <input type="date" class="form-control bg-dark text-white border-secondary" id="signupDOB">
+                  <div class="form-text text-muted" style="font-size:0.7rem;">Needed for age-appropriate content (18+ for R-rated).</div>
                 </div>
                 <button class="btn btn-warning w-100 rounded-pill fw-600 mb-2" onclick="handleEmailSignup()">Sign Up</button>
                 <button class="btn btn-link text-muted w-100 text-decoration-none small" onclick="backToLogin()">Already have an account? Sign In</button>
@@ -489,7 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle Auth State Changes
   if (typeof auth !== 'undefined') {
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged(async user => {
       const signInBtn = document.getElementById('navSignInBtn');
       const profileDrop = document.getElementById('userProfileDropdown');
       const navName = document.getElementById('navUserName');
@@ -498,6 +580,18 @@ document.addEventListener('DOMContentLoaded', () => {
         signInBtn?.classList.add('d-none');
         profileDrop?.classList.remove('d-none');
         if (navName) navName.textContent = user.displayName || user.email.split('@')[0];
+
+        // Fetch User Data from Firestore (DOB/Age)
+        try {
+          const userDoc = await db.collection('users').doc(user.uid).get();
+          if (userDoc.exists) {
+            const data = userDoc.data();
+            if (data.dob) {
+              currentUserAge = calculateAge(data.dob);
+              console.log("👤 User Age Cached:", currentUserAge);
+            }
+          }
+        } catch (e) { console.error("Error fetching age:", e); }
         
         // Handle navbar avatar
         const navAvatar = document.getElementById('navUserAvatar');
@@ -523,6 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         signInBtn?.classList.remove('d-none');
         profileDrop?.classList.add('d-none');
+        currentUserAge = null;
       }
     });
   }

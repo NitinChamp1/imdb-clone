@@ -25,6 +25,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  // ---- Age Restriction Check ----
+  if (!canUserView(item.pg)) {
+    document.getElementById('detailContent').innerHTML = `
+      <div class="min-vh-100 d-flex align-items-center justify-content-center p-4">
+        <div class="text-center p-5 rounded-4 bg-dark border border-secondary shadow-lg" style="max-width: 500px; background: linear-gradient(145deg, #1a1a1a, #0d0d0d);">
+          <div class="mb-4">
+            <i class="bi bi-shield-lock-fill text-danger" style="font-size: 4.5rem; filter: drop-shadow(0 0 10px rgba(220, 53, 69, 0.4));"></i>
+          </div>
+          <h2 class="text-white fw-bold mb-3">Age Restricted</h2>
+          <p class="text-muted mb-4" style="line-height: 1.6;">
+            This content is rated <span class="badge bg-danger">${item.pg || 'R'}</span>. 
+            You must be <span class="text-warning fw-bold">18 or older</span> to view this title. 
+            Please explore our family-friendly collection instead!
+          </p>
+          <div class="d-grid gap-3">
+            <a href="index.html" class="btn btn-warning rounded-pill py-2 fw-bold shadow">
+              <i class="bi bi-house-door-fill me-2"></i>Back to Home
+            </a>
+            <a href="profile.html" class="btn btn-outline-secondary rounded-pill py-2">
+              <i class="bi bi-person-fill me-2"></i>View My Profile
+            </a>
+          </div>
+        </div>
+      </div>`;
+    return;
+  }
+
   document.getElementById('pageTitle').textContent = `${item.title} (${item.year}) – RNDb Clone`;
   addToRecentlyViewed({ id: item.id, title: item.title, poster: item.poster, year: item.year, rating: item.rating, type: item.type });
 

@@ -95,7 +95,8 @@ async function loadWhatsPopular(btn, type) {
   else if(type === 'in_theaters') data = await TMDB.getNowPlaying(1);
   
   if(!data) { container.innerHTML = ''; return; }
-  container.innerHTML = data.results.map(item => makeCleanCard(normalizeTMDb(item))).join('');
+  const filteredResults = data.results.map(item => normalizeTMDb(item)).filter(m => canUserView(m.pg));
+  container.innerHTML = filteredResults.map(item => makeCleanCard(item)).join('');
 }
 
 async function loadFreeToWatch(btn, type) {
@@ -117,7 +118,8 @@ async function loadFreeToWatch(btn, type) {
   else data = await TMDB.discoverTV({ sortBy: 'popularity.desc' });
   
   if(!data) { container.innerHTML = ''; return; }
-  container.innerHTML = data.results.map(item => makeCleanCard(normalizeTMDb(item, type === 'tv' ? 'tv' : 'movie'))).join('');
+  const filteredResults = data.results.map(item => normalizeTMDb(item, type === 'tv' ? 'tv' : 'movie')).filter(m => canUserView(m.pg));
+  container.innerHTML = filteredResults.map(item => makeCleanCard(item)).join('');
 }
 
 function showSkeletons() {
@@ -131,7 +133,7 @@ function initHeroCarousel(liveData) {
   const inner = document.getElementById('heroCarouselInner');
   if (!inner) return;
 
-  const movies = (liveData && liveData.length) ? liveData : HERO_MOVIES;
+  const movies = ((liveData && liveData.length) ? liveData : HERO_MOVIES).filter(m => canUserView(m.pg));
   movies.forEach((m, i) => {
     const div = document.createElement('div');
     div.className = `carousel-item${i === 0 ? ' active' : ''}`;
@@ -206,6 +208,9 @@ function initFeaturedSection(filter, liveData) {
     ? (filter === 'all' ? _featuredLiveData : _featuredLiveData.filter(m => m.genre?.includes(filter)))
     : (filter === 'all' ? MOVIES.filter(m => m.featured) : MOVIES.filter(m => m.featured && m.genre.includes(filter)));
 
+  // Age Filter
+  movies = movies.filter(m => canUserView(m.pg));
+
   if (!movies.length) {
     grid.innerHTML = `<div class="col-12 text-center text-muted py-5"><i class="bi bi-emoji-frown fs-2 mb-2 d-block"></i>No movies found for this genre.</div>`;
     return;
@@ -263,7 +268,7 @@ function initFeaturedSection(filter, liveData) {
 function initTopRated(liveData) {
   const container = document.getElementById('topRatedContainer');
   if (!container) return;
-  const source = (liveData && liveData.length) ? liveData : [...MOVIES].sort((a, b) => b.rating - a.rating).slice(0, 15);
+  const source = ((liveData && liveData.length) ? liveData : [...MOVIES].sort((a, b) => b.rating - a.rating).slice(0, 15)).filter(m => canUserView(m.pg));
   container.innerHTML = source.map((m, i) => makeScrollCard({ ...m, ranked: m.ranked || i + 1 })).join('');
 }
 
@@ -281,7 +286,7 @@ function initTrending(type, liveData) {
 
   const staticData = type === 'movies' ? MOVIES.filter(m => m.trending) : TV_SHOWS.filter(m => m.trending);
   const liveSource = type === 'movies' ? _trendingLiveMovies : _trendingLiveTV;
-  const data = (liveSource && liveSource.length) ? liveSource : staticData;
+  const data = ((liveSource && liveSource.length) ? liveSource : staticData).filter(m => canUserView(m.pg));
 
   container.innerHTML = data.map(m => makeScrollCard(m)).join('');
 
@@ -305,9 +310,9 @@ function initFanFavorites(liveData) {
   const grid = document.getElementById('fanFavoritesGrid');
   if (!grid) return;
   // Live: use top 8 from popular; Static: filter fanFav flag
-  const favs = (liveData && liveData.length)
+  const favs = ((liveData && liveData.length)
     ? liveData.slice(0, 8)
-    : MOVIES.filter(m => m.fanFav).slice(0, 8);
+    : MOVIES.filter(m => m.fanFav).slice(0, 8)).filter(m => canUserView(m.pg));
 
   grid.innerHTML = favs.map((m, i) => `
     <div class="col-12 col-md-6 col-xl-3 animate-in" style="animation-delay:${i * 0.06}s;">
@@ -347,7 +352,7 @@ function initOriginalsGrid() {
 function initTopTV(liveData) {
   const container = document.getElementById('topTVContainer');
   if (!container) return;
-  const source = (liveData && liveData.length) ? liveData : TV_SHOWS.filter(t => t.topTV || t.trending);
+  const source = ((liveData && liveData.length) ? liveData : TV_SHOWS.filter(t => t.topTV || t.trending)).filter(m => canUserView(m.pg));
   container.innerHTML = source.map(m => makeScrollCard(m)).join('');
 }
 
