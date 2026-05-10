@@ -427,7 +427,7 @@ function ensureAuthUI() {
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body px-4 pb-4">
-              <div class="text-center mb-4"><span class="rndb-logo fs-3 text-warning">RNDb</span></div>
+              <div class="text-center mb-4"><span class="rndb-logo fs-3 text-dark">RNDb</span></div>
               <button class="btn btn-outline-light w-100 rounded-pill mb-3 d-flex align-items-center justify-content-center gap-2" onclick="loginWithGoogle()">
                 <i class="bi bi-google"></i> Sign in with Google
               </button>
@@ -481,7 +481,7 @@ function ensureAuthUI() {
                   <input type="date" class="form-control bg-dark text-white border-secondary" id="signupDOB">
                 </div>
                 <button class="btn btn-warning w-100 rounded-pill fw-600 mb-2" onclick="handleEmailSignup()">Sign Up</button>
-                <button class="btn btn-link text-warning w-100 text-decoration-none small" onclick="backToLogin()">Already have an account? Sign In</button>
+                <button class="btn btn-link w-100 text-decoration-none small" onclick="backToLogin()"><span class="text-muted">Already have an account?</span> <span class="text-warning">Sign In</span></button>
               </div>
             </div>
           </div>
