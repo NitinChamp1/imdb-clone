@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       <div class="container-fluid px-4">
         <div class="row g-4">
           <!-- Main Content -->
-          <div class="col-lg-8">
+          <div class="col-lg-8" style="max-height: 100vh; overflow-y: auto; padding-right: 15px; scrollbar-width: thin;">
             <!-- Cast -->
             <h3 class="section-title mb-4">Top Cast</h3>
             <div class="d-flex gap-4 overflow-auto pb-3 mb-5" id="castRow" style="scrollbar-width:thin;">
@@ -252,8 +252,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
 
           <!-- Sidebar -->
-          <div class="col-lg-4">
-            <div class="sticky-top" style="top:80px;">
+          <div class="col-lg-4" style="max-height: 100vh; overflow-y: auto; padding-right: 15px; scrollbar-width: thin;">
+            <div>
               <!-- Stats -->
               <div class="p-4 rounded-3 mb-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
                 <h5 class="text-warning mb-3">Popularity Stats</h5>
