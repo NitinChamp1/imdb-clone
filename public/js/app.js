@@ -411,7 +411,12 @@ async function syncWatchlistFromFirestore(userId) {
 }
 
 function ensureAuthUI() {
-  if (!document.getElementById('loginModal')) {
+  // Always refresh or check if DOB is missing to ensure latest UI
+  if (!document.getElementById('loginModal') || !document.getElementById('signupDOB')) {
+    // Remove old modals if they exist but are outdated
+    document.getElementById('loginModal')?.remove();
+    document.getElementById('signupModal')?.remove();
+
     const modalsHtml = `
       <!-- Login Modal -->
       <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
@@ -422,7 +427,7 @@ function ensureAuthUI() {
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body px-4 pb-4">
-              <div class="text-center mb-4"><span class="rndb-logo fs-3">RNDb</span></div>
+              <div class="text-center mb-4"><span class="rndb-logo fs-3 text-warning">RNDb</span></div>
               <button class="btn btn-outline-light w-100 rounded-pill mb-3 d-flex align-items-center justify-content-center gap-2" onclick="loginWithGoogle()">
                 <i class="bi bi-google"></i> Sign in with Google
               </button>
@@ -477,7 +482,7 @@ function ensureAuthUI() {
                   <div class="form-text text-muted" style="font-size:0.7rem;">Needed for age-appropriate content (18+ for R-rated).</div>
                 </div>
                 <button class="btn btn-warning w-100 rounded-pill fw-600 mb-2" onclick="handleEmailSignup()">Sign Up</button>
-                <button class="btn btn-link text-muted w-100 text-decoration-none small" onclick="backToLogin()">Already have an account? Sign In</button>
+                <button class="btn btn-link text-warning w-100 text-decoration-none small" onclick="backToLogin()">Already have an account? Sign In</button>
               </div>
             </div>
           </div>
